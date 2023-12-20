@@ -5,7 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.BlockThreshold
 import com.google.ai.client.generativeai.type.GenerateContentResponse
+import com.google.ai.client.generativeai.type.HarmCategory
+import com.google.ai.client.generativeai.type.SafetySetting
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
@@ -25,6 +28,12 @@ class MainViewModel : ViewModel() {
 
     private fun getModel() = GenerativeModel(
         modelName = "gemini-pro",
-        apiKey = BuildConfig.API_KEY
+        apiKey = BuildConfig.API_KEY,
+        safetySettings = listOf(
+            SafetySetting(HarmCategory.HARASSMENT, BlockThreshold.NONE),
+            SafetySetting(HarmCategory.DANGEROUS_CONTENT, BlockThreshold.NONE),
+            SafetySetting(HarmCategory.HATE_SPEECH, BlockThreshold.NONE),
+            SafetySetting(HarmCategory.SEXUALLY_EXPLICIT, BlockThreshold.NONE),
+        )
     )
 }
