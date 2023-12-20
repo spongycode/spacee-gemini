@@ -72,4 +72,10 @@ dependencies {
 
     // Gemini api dependency
     implementation("com.google.ai.client.generativeai:generativeai:0.1.1")
+
+    //Navigation and Material-Design
+    implementation("androidx.navigation:navigation-compose:2.7.1")
+    implementation("androidx.compose.material:material:1.5.0")
+    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
 }
