@@ -26,7 +26,7 @@ import com.spongycode.spaceegemini.navigation.TopBar
 @ExperimentalMaterial3Api
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AboutScreen(navController: NavHostController){
+fun AboutScreen(navController: NavHostController) {
     Scaffold(
         topBar = { TopBar(name = "About", navController = navController) }
     ) {
@@ -35,6 +35,7 @@ fun AboutScreen(navController: NavHostController){
         }
     }
 }
+
 @Composable
 fun AboutScreenComponent() {
     Column(
@@ -55,7 +56,9 @@ fun AboutScreenComponent() {
         )
         {
             Column(
-                modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {

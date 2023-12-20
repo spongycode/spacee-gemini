@@ -19,14 +19,14 @@ import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
-fun HomeTopBar(scope: CoroutineScope, drawerState: DrawerState){
+fun HomeTopBar(scope: CoroutineScope, drawerState: DrawerState) {
     CenterAlignedTopAppBar(
         title = {
-                Text(
-                    text = "Spacee-Gemini",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.W500
-                )
+            Text(
+                text = "Spacee-Gemini",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.W500
+            )
         },
         actions = {
         },

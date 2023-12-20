@@ -19,10 +19,11 @@ import androidx.navigation.NavHostController
 
 @ExperimentalMaterial3Api
 @Composable
-fun TopBar(name:String,navController: NavHostController) {
+fun TopBar(name: String, navController: NavHostController) {
     TopAppBar(
         title = {
-            Text(text = name,
+            Text(
+                text = name,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp
             )

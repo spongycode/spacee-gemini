@@ -3,11 +3,10 @@ package com.spongycode.spaceegemini.navigation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.spongycode.spaceegemini.data.MainViewModel
+import com.spongycode.spaceegemini.MainViewModel
 import com.spongycode.spaceegemini.screens.AboutScreen
 import com.spongycode.spaceegemini.screens.HomeScreen
 
@@ -15,8 +14,8 @@ import com.spongycode.spaceegemini.screens.HomeScreen
 @ExperimentalMaterial3Api
 @Composable
 fun MyNavigation(
-                 viewModel: MainViewModel,
-                 onSearchClicked: (String) -> Unit) {
+    viewModel: MainViewModel,
+    onSearchClicked: (String) -> Unit) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Home.route)
     {

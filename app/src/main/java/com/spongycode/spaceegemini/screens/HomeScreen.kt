@@ -46,14 +46,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.spongycode.spaceegemini.data.MainViewModel
+import com.spongycode.spaceegemini.MainViewModel
 import com.spongycode.spaceegemini.navigation.HomeTopBar
 import com.spongycode.spaceegemini.navigation.Items
 import kotlinx.coroutines.launch
@@ -63,9 +62,9 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
-               viewModel: MainViewModel,
-               onSearchClicked: (String) -> Unit,
-               navController:NavHostController
+    viewModel: MainViewModel,
+    onSearchClicked: (String) -> Unit,
+    navController: NavHostController
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -134,11 +133,12 @@ fun HomeScreen(
         }
     }
 }
+
 @ExperimentalComposeUiApi
 @Composable
 fun HomeScreenComponent(
-               viewModel: MainViewModel,
-               onSearchClicked: (String) -> Unit
+    viewModel: MainViewModel,
+    onSearchClicked: (String) -> Unit
 ) {
     val response = viewModel.response.observeAsState().value.toString()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -154,7 +154,7 @@ fun HomeScreenComponent(
                 .weight(1f)
                 .fillMaxWidth()
                 .padding(5.dp)
-        ){
+        ) {
             item {
                 Text(
                     text = response,
@@ -173,7 +173,7 @@ fun HomeScreenComponent(
             OutlinedTextField(
                 singleLine = true,
                 value = text,
-                onValueChange = {newText -> text = newText },
+                onValueChange = { newText -> text = newText },
                 placeholder = { Text(text = "Ask a question") },
                 modifier = Modifier
                     .weight(1f)
