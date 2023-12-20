@@ -1,4 +1,4 @@
-package com.spongycode.spaceegemini
+package com.spongycode.spaceegemini.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.GenerateContentResponse
+import com.spongycode.spaceegemini.BuildConfig
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
