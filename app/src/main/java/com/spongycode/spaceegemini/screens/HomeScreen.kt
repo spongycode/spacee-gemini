@@ -121,6 +121,7 @@ fun HomeScreen(
                             .size(60.dp)
                     )
                 }
+
             }
         },
         drawerState = drawerState
@@ -128,7 +129,7 @@ fun HomeScreen(
         Scaffold(
             topBar = { HomeTopBar(scope, drawerState) }
         ) {
-            Column(modifier = Modifier.padding(top = 60.dp)) {
+            Column(modifier = Modifier.fillMaxSize().padding(it)) {
                 HomeScreenComponent(viewModel, onSearchClicked)
             }
         }
@@ -144,11 +145,7 @@ fun HomeScreenComponent(
     val keyboardController = LocalSoftwareKeyboardController.current
     var text by remember { mutableStateOf(TextFieldValue("")) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .fillMaxHeight(1f)
-    ) {
+    Column{
         LazyColumn(
             modifier = Modifier
                 .weight(1f)

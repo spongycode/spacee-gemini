@@ -23,8 +23,8 @@ fun HomeTopBar(scope: CoroutineScope, drawerState: DrawerState){
     CenterAlignedTopAppBar(
         title = {
                 Text(
-                    text = "Spacee-Gemini",
-                    fontSize = 20.sp,
+                    text = "Spacee Gemini",
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.W500
                 )
         },
