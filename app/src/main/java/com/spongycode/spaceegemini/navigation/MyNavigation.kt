@@ -6,9 +6,11 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.spongycode.spaceegemini.MainViewModel
+import com.spongycode.spaceegemini.data.MainViewModel
 import com.spongycode.spaceegemini.screens.AboutScreen
 import com.spongycode.spaceegemini.screens.HomeScreen
+import com.spongycode.spaceegemini.screens.MultiTurn
+
 
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
@@ -22,6 +24,9 @@ fun MyNavigation(
         composable(Home.route)
         {
             HomeScreen(viewModel, onSearchClicked, navController)
+        }
+        composable(MultiTurn.route){
+            MultiTurn(viewModel)
         }
         composable(About.route){
             AboutScreen(navController)

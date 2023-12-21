@@ -52,7 +52,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.spongycode.spaceegemini.MainViewModel
+import com.spongycode.spaceegemini.data.MainViewModel
 import com.spongycode.spaceegemini.navigation.HomeTopBar
 import com.spongycode.spaceegemini.navigation.Items
 import kotlinx.coroutines.launch

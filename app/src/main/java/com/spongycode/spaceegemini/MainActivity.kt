@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import com.spongycode.spaceegemini.data.MainViewModel
 import com.spongycode.spaceegemini.navigation.MyNavigation
 import com.spongycode.spaceegemini.ui.theme.SpaceeGeminiTheme
 
