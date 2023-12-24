@@ -3,7 +3,6 @@ package com.spongycode.spaceegemini.data
 import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,8 +17,8 @@ import com.spongycode.spaceegemini.BuildConfig
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
-    private val _response = MutableLiveData<String>("Response...")
-    val response: LiveData<String> = _response
+    private val _singleResponse = MutableLiveData(mutableStateListOf<String>())
+    val singleResponse: MutableLiveData<SnapshotStateList<String>> = _singleResponse
 
     private val _conversationList = MutableLiveData(mutableStateListOf<String>())
     val conversationList: MutableLiveData<SnapshotStateList<String>> = _conversationList
@@ -31,13 +30,18 @@ class MainViewModel : ViewModel() {
     private var visionModel: GenerativeModel? = null
     private var chat: Chat? = null
     fun makeQuery(prompt: String) {
+        _singleResponse.value?.clear()
+        _singleResponse.value?.add(prompt)
+        _singleResponse.value?.add("Generating...")
         if (model == null) {
             model = getModel()
         }
         viewModelScope.launch {
-            _response.value = "Generating..."
-            val answer: GenerateContentResponse = model?.generateContent(prompt)!!
-            _response.value = answer.text
+            val singleAnswer: GenerateContentResponse = model?.generateContent(prompt)!!
+            singleAnswer.text?.let {
+                _singleResponse.value?.removeLastOrNull()
+                _singleResponse.value?.add(it)
+            }
         }
     }
 
@@ -74,7 +78,6 @@ class MainViewModel : ViewModel() {
             text(prompt)
         }
         viewModelScope.launch {
-
             val imageAnswer = visionModel!!.generateContent(inputContent)
             imageAnswer.text?.let {
                 _imageResponse.value?.removeLastOrNull()

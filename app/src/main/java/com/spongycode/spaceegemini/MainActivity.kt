@@ -26,10 +26,16 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     MyNavigation(
-                        viewModel = viewModel,
-                        onSearchClicked = { query -> viewModel.makeQuery(query) })
+                        viewModel = viewModel
+                    )
                 }
             }
         }
     }
+}
+
+enum class ApiType {
+    SINGLE_CHAT,
+    MULTI_CHAT,
+    IMAGE_CHAT
 }

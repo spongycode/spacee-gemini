@@ -17,21 +17,20 @@ import com.spongycode.spaceegemini.screens.MultiTurn
 @ExperimentalMaterial3Api
 @Composable
 fun MyNavigation(
-    viewModel: MainViewModel,
-    onSearchClicked: (String) -> Unit
+    viewModel: MainViewModel
 ) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Home.route)
     {
         composable(Home.route)
         {
-            HomeScreen(viewModel, onSearchClicked, navController)
+            HomeScreen(viewModel, navController)
         }
         composable(MultiTurn.route) {
-            MultiTurn(viewModel)
+            MultiTurn(viewModel, navController)
         }
         composable(ImageText.route) {
-            ImageText(viewModel)
+            ImageText(viewModel, navController)
         }
         composable(About.route) {
             AboutScreen(navController)
