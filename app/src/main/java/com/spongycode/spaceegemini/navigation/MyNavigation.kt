@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.spongycode.spaceegemini.data.MainViewModel
 import com.spongycode.spaceegemini.screens.AboutScreen
 import com.spongycode.spaceegemini.screens.HomeScreen
+import com.spongycode.spaceegemini.screens.ImageText
 import com.spongycode.spaceegemini.screens.MultiTurn
 
 
@@ -17,7 +18,8 @@ import com.spongycode.spaceegemini.screens.MultiTurn
 @Composable
 fun MyNavigation(
     viewModel: MainViewModel,
-    onSearchClicked: (String) -> Unit) {
+    onSearchClicked: (String) -> Unit
+) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Home.route)
     {
@@ -25,10 +27,13 @@ fun MyNavigation(
         {
             HomeScreen(viewModel, onSearchClicked, navController)
         }
-        composable(MultiTurn.route){
+        composable(MultiTurn.route) {
             MultiTurn(viewModel)
         }
-        composable(About.route){
+        composable(ImageText.route) {
+            ImageText(viewModel)
+        }
+        composable(About.route) {
             AboutScreen(navController)
         }
     }

@@ -10,6 +10,9 @@ object Home : Destinations {
 object MultiTurn : Destinations {
     override val route = "MultiTurn"
 }
+object ImageText : Destinations {
+    override val route = "ImageText"
+}
 
 object About : Destinations {
     override val route = "About"
