@@ -3,6 +3,7 @@ package com.spongycode.spaceegemini.components
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -54,17 +55,29 @@ fun TypingArea(
     var text by remember { mutableStateOf(TextFieldValue("")) }
     Row(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .background(Color.White),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (apiType == ApiType.IMAGE_CHAT) {
-            IconButton(onClick = { launcherMultipleImages?.launch("image/*") }
+
+        when (apiType) {
+            ApiType.MULTI_CHAT -> IconButton(onClick = { viewModel.clearContext() }
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.refresh),
+                    contentDescription = "refresh"
+                )
+            }
+
+            ApiType.IMAGE_CHAT -> IconButton(onClick = { launcherMultipleImages?.launch("image/*") }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_add_a_photo_24),
                     contentDescription = "add"
                 )
             }
+
+            ApiType.SINGLE_CHAT -> Unit
         }
 
         OutlinedTextField(
@@ -83,7 +96,7 @@ fun TypingArea(
                 onDone = { keyboardController?.hide() }
             ),
             colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.LightGray,
+                focusedIndicatorColor = Color.Black,
                 unfocusedIndicatorColor = Color.LightGray,
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White,
@@ -100,16 +113,18 @@ fun TypingArea(
                         modifier = Modifier
                             .size(30.dp)
                             .clickable {
-                                keyboardController?.hide()
-                                when (apiType) {
-                                    ApiType.SINGLE_CHAT -> viewModel.makeQuery(text.text)
-                                    ApiType.MULTI_CHAT -> viewModel.makeConversationQuery(text.text)
-                                    ApiType.IMAGE_CHAT -> viewModel.makeImageQuery(
-                                        text.text,
-                                        bitmaps!!
-                                    )
+                                if (text.text.isNotEmpty()) {
+                                    keyboardController?.hide()
+                                    when (apiType) {
+                                        ApiType.SINGLE_CHAT -> viewModel.makeQuery(text.text)
+                                        ApiType.MULTI_CHAT -> viewModel.makeConversationQuery(text.text)
+                                        ApiType.IMAGE_CHAT -> viewModel.makeImageQuery(
+                                            text.text,
+                                            bitmaps!!
+                                        )
+                                    }
+                                    text = TextFieldValue("")
                                 }
-                                text = TextFieldValue("")
                             }
                     )
                 }
@@ -120,5 +135,4 @@ fun TypingArea(
             )
         )
     }
-
 }

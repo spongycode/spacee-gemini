@@ -2,9 +2,12 @@ package com.spongycode.spaceegemini.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,6 +28,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -107,7 +111,13 @@ fun HomeScreen(
         Scaffold(
             topBar = { HomeTopBar(scope, drawerState) }
         ) {
-            Column(modifier = Modifier.padding(top = it.calculateTopPadding())) {
+            Column(
+                modifier = Modifier
+                    .padding(top = it.calculateTopPadding())
+                    .fillMaxSize()
+                    .fillMaxHeight(1f)
+                    .background(Color.White)
+            ) {
                 Box(
                     modifier = Modifier.weight(1f)
                 ) {

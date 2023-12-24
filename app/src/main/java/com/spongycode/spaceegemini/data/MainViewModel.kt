@@ -87,6 +87,11 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun clearContext() {
+        _conversationList.value?.clear()
+        chat = getChat()
+    }
+
     private fun getChat() = model?.startChat(listOf())
 
     private fun getModel(vision: Boolean = false) = GenerativeModel(
