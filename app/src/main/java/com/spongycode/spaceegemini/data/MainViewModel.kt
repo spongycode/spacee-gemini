@@ -14,25 +14,26 @@ import com.google.ai.client.generativeai.type.HarmCategory
 import com.google.ai.client.generativeai.type.SafetySetting
 import com.google.ai.client.generativeai.type.content
 import com.spongycode.spaceegemini.BuildConfig
+import com.spongycode.spaceegemini.Mode
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
-    private val _singleResponse = MutableLiveData(mutableStateListOf<String>())
-    val singleResponse: MutableLiveData<SnapshotStateList<String>> = _singleResponse
+    private val _singleResponse = MutableLiveData(mutableStateListOf<Message>())
+    val singleResponse: MutableLiveData<SnapshotStateList<Message>> = _singleResponse
 
-    private val _conversationList = MutableLiveData(mutableStateListOf<String>())
-    val conversationList: MutableLiveData<SnapshotStateList<String>> = _conversationList
+    private val _conversationList = MutableLiveData(mutableStateListOf<Message>())
+    val conversationList: MutableLiveData<SnapshotStateList<Message>> = _conversationList
 
-    private val _imageResponse = MutableLiveData(mutableStateListOf<String>())
-    val imageResponse: MutableLiveData<SnapshotStateList<String>> = _imageResponse
+    private val _imageResponse = MutableLiveData(mutableStateListOf<Message>())
+    val imageResponse: MutableLiveData<SnapshotStateList<Message>> = _imageResponse
 
     private var model: GenerativeModel? = null
     private var visionModel: GenerativeModel? = null
     private var chat: Chat? = null
     fun makeQuery(prompt: String) {
         _singleResponse.value?.clear()
-        _singleResponse.value?.add(prompt)
-        _singleResponse.value?.add("Generating...")
+        _singleResponse.value?.add(Message(text = prompt, mode = Mode.USER))
+        _singleResponse.value?.add(Message(text = "Generating...", mode = Mode.GEMINI))
         if (model == null) {
             model = getModel()
         }
@@ -40,14 +41,14 @@ class MainViewModel : ViewModel() {
             val singleAnswer: GenerateContentResponse = model?.generateContent(prompt)!!
             singleAnswer.text?.let {
                 _singleResponse.value?.removeLastOrNull()
-                _singleResponse.value?.add(it)
+                _singleResponse.value?.add(Message(text = it.trim(), mode = Mode.GEMINI))
             }
         }
     }
 
     fun makeConversationQuery(prompt: String) {
-        _conversationList.value?.add(prompt)
-        _conversationList.value?.add("Generating...")
+        _conversationList.value?.add(Message(text = prompt, mode = Mode.USER))
+        _conversationList.value?.add(Message(text = "Generating...", mode = Mode.GEMINI))
 
         if (model == null) {
             model = getModel()
@@ -59,15 +60,15 @@ class MainViewModel : ViewModel() {
             val singleResponse = chat?.sendMessage(prompt)
             singleResponse?.text?.let {
                 _conversationList.value?.removeLastOrNull()
-                _conversationList.value?.add(it)
+                _conversationList.value?.add(Message(text = it.trim(), mode = Mode.GEMINI))
             }
         }
     }
 
     fun makeImageQuery(prompt: String, bitmaps: List<Bitmap>) {
         _imageResponse.value?.clear()
-        _imageResponse.value?.add(prompt)
-        _imageResponse.value?.add("Generating...")
+        _imageResponse.value?.add(Message(text = prompt, mode = Mode.USER))
+        _imageResponse.value?.add(Message(text = "Generating...", mode = Mode.GEMINI))
         if (visionModel == null) {
             visionModel = getModel(true)
         }
@@ -81,7 +82,7 @@ class MainViewModel : ViewModel() {
             val imageAnswer = visionModel!!.generateContent(inputContent)
             imageAnswer.text?.let {
                 _imageResponse.value?.removeLastOrNull()
-                _imageResponse.value?.add(it)
+                _imageResponse.value?.add(Message(text = it.trim(), mode = Mode.GEMINI))
             }
         }
     }

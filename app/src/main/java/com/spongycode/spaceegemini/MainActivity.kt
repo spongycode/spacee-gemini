@@ -39,3 +39,8 @@ enum class ApiType {
     MULTI_CHAT,
     IMAGE_CHAT
 }
+
+enum class Mode {
+    USER,
+    GEMINI
+}
