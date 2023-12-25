@@ -32,7 +32,13 @@ class MainViewModel : ViewModel() {
     fun makeQuery(prompt: String) {
         _singleResponse.value?.clear()
         _singleResponse.value?.add(Message(text = prompt, mode = Mode.USER))
-        _singleResponse.value?.add(Message(text = "Generating...", mode = Mode.GEMINI))
+        _singleResponse.value?.add(
+            Message(
+                text = "Generating...",
+                mode = Mode.GEMINI,
+                isGenerating = true
+            )
+        )
         if (model == null) {
             model = getModel()
         }
@@ -42,15 +48,25 @@ class MainViewModel : ViewModel() {
                 output += chunk.text.toString().trimStart()
                 _singleResponse.value?.set(
                     _singleResponse.value!!.lastIndex,
-                    Message(text = output, mode = Mode.GEMINI)
+                    Message(text = output, mode = Mode.GEMINI, isGenerating = true)
                 )
             }
+            _singleResponse.value?.set(
+                _singleResponse.value!!.lastIndex,
+                Message(text = output, mode = Mode.GEMINI, isGenerating = false)
+            )
         }
     }
 
     fun makeConversationQuery(prompt: String) {
         _conversationList.value?.add(Message(text = prompt, mode = Mode.USER))
-        _conversationList.value?.add(Message(text = "Generating...", mode = Mode.GEMINI))
+        _conversationList.value?.add(
+            Message(
+                text = "Generating...",
+                mode = Mode.GEMINI,
+                isGenerating = true
+            )
+        )
 
         if (model == null) {
             model = getModel()
@@ -64,16 +80,26 @@ class MainViewModel : ViewModel() {
                 output += chunk.text.toString().trimStart()
                 _conversationList.value?.set(
                     _conversationList.value!!.lastIndex,
-                    Message(text = output, mode = Mode.GEMINI)
+                    Message(text = output, mode = Mode.GEMINI, isGenerating = true)
                 )
             }
+            _conversationList.value?.set(
+                _conversationList.value!!.lastIndex,
+                Message(text = output, mode = Mode.GEMINI, isGenerating = false)
+            )
         }
     }
 
     fun makeImageQuery(prompt: String, bitmaps: List<Bitmap>) {
         _imageResponse.value?.clear()
         _imageResponse.value?.add(Message(text = prompt, mode = Mode.USER))
-        _imageResponse.value?.add(Message(text = "Generating...", mode = Mode.GEMINI))
+        _imageResponse.value?.add(
+            Message(
+                text = "Generating...",
+                mode = Mode.GEMINI,
+                isGenerating = true
+            )
+        )
         if (visionModel == null) {
             visionModel = getModel(true)
         }
@@ -89,9 +115,13 @@ class MainViewModel : ViewModel() {
                 output += chunk.text.toString().trimStart()
                 _imageResponse.value?.set(
                     _imageResponse.value!!.lastIndex,
-                    Message(text = output, mode = Mode.GEMINI)
+                    Message(text = output, mode = Mode.GEMINI, isGenerating = true)
                 )
             }
+            _imageResponse.value?.set(
+                _imageResponse.value!!.lastIndex,
+                Message(text = output, mode = Mode.GEMINI, isGenerating = false)
+            )
         }
     }
 

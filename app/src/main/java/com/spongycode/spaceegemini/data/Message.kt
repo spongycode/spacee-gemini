@@ -4,5 +4,6 @@ import com.spongycode.spaceegemini.Mode
 
 data class Message(
     val text: String,
-    val mode: Mode
+    val mode: Mode,
+    val isGenerating: Boolean = false
 )
