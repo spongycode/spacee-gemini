@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.Chat
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.BlockThreshold
-import com.google.ai.client.generativeai.type.GenerateContentResponse
 import com.google.ai.client.generativeai.type.HarmCategory
 import com.google.ai.client.generativeai.type.SafetySetting
 import com.google.ai.client.generativeai.type.content
@@ -38,10 +37,13 @@ class MainViewModel : ViewModel() {
             model = getModel()
         }
         viewModelScope.launch {
-            val singleAnswer: GenerateContentResponse = model?.generateContent(prompt)!!
-            singleAnswer.text?.let {
-                _singleResponse.value?.removeLastOrNull()
-                _singleResponse.value?.add(Message(text = it.trim(), mode = Mode.GEMINI))
+            var output = ""
+            model?.generateContentStream(prompt)?.collect { chunk ->
+                output += chunk.text.toString().trimStart()
+                _singleResponse.value?.set(
+                    _singleResponse.value!!.lastIndex,
+                    Message(text = output, mode = Mode.GEMINI)
+                )
             }
         }
     }
@@ -57,10 +59,13 @@ class MainViewModel : ViewModel() {
             chat = getChat()
         }
         viewModelScope.launch {
-            val singleResponse = chat?.sendMessage(prompt)
-            singleResponse?.text?.let {
-                _conversationList.value?.removeLastOrNull()
-                _conversationList.value?.add(Message(text = it.trim(), mode = Mode.GEMINI))
+            var output = ""
+            chat?.sendMessageStream(prompt)?.collect { chunk ->
+                output += chunk.text.toString().trimStart()
+                _conversationList.value?.set(
+                    _conversationList.value!!.lastIndex,
+                    Message(text = output, mode = Mode.GEMINI)
+                )
             }
         }
     }
@@ -79,10 +84,13 @@ class MainViewModel : ViewModel() {
             text(prompt)
         }
         viewModelScope.launch {
-            val imageAnswer = visionModel!!.generateContent(inputContent)
-            imageAnswer.text?.let {
-                _imageResponse.value?.removeLastOrNull()
-                _imageResponse.value?.add(Message(text = it.trim(), mode = Mode.GEMINI))
+            var output = ""
+            visionModel?.generateContentStream(inputContent)?.collect { chunk ->
+                output += chunk.text.toString().trimStart()
+                _imageResponse.value?.set(
+                    _imageResponse.value!!.lastIndex,
+                    Message(text = output, mode = Mode.GEMINI)
+                )
             }
         }
     }
