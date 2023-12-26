@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -64,6 +65,7 @@ fun TypingArea(
         ApiType.IMAGE_CHAT -> viewModel.imageResponse.observeAsState().value?.lastOrNull()?.isGenerating
         ApiType.MULTI_CHAT -> viewModel.conversationList.observeAsState().value?.lastOrNull()?.isGenerating
     }
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -129,12 +131,18 @@ fun TypingArea(
                                         keyboardController?.hide()
                                         focusManager.clearFocus()
                                         when (apiType) {
-                                            ApiType.SINGLE_CHAT -> viewModel.makeQuery(text.text)
+                                            ApiType.SINGLE_CHAT -> viewModel.makeQuery(
+                                                context,
+                                                text.text
+                                            )
+
                                             ApiType.MULTI_CHAT -> viewModel.makeConversationQuery(
+                                                context,
                                                 text.text
                                             )
 
                                             ApiType.IMAGE_CHAT -> viewModel.makeImageQuery(
+                                                context,
                                                 text.text,
                                                 bitmaps!!
                                             )

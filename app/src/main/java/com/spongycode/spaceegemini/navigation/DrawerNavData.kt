@@ -25,6 +25,11 @@ val Items = listOf(
         unselectedIcon = R.drawable.conversation_icon,
     ),
     DrawerNavigationItem(
+        title = "Settings",
+        selectedIcon = R.drawable.settings,
+        unselectedIcon = R.drawable.settings,
+    ),
+    DrawerNavigationItem(
         title = "About",
         selectedIcon = R.drawable.info,
         unselectedIcon = R.drawable.info,

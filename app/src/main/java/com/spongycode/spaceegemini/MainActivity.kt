@@ -1,5 +1,6 @@
 package com.spongycode.spaceegemini
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,12 +12,18 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import com.spongycode.spaceegemini.data.MainViewModel
 import com.spongycode.spaceegemini.navigation.MyNavigation
+import com.spongycode.spaceegemini.screens.SetApiScreen
 import com.spongycode.spaceegemini.ui.theme.SpaceeGeminiTheme
+import com.spongycode.util.datastore
+import com.spongycode.util.getApiKey
+import kotlinx.coroutines.runBlocking
 
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
+
+    @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -24,10 +31,19 @@ class MainActivity : ComponentActivity() {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                 ) {
-
-                    MyNavigation(
-                        viewModel = viewModel
-                    )
+                    if (runBlocking { applicationContext.datastore.getApiKey().isEmpty() }) {
+                        SetApiScreen(viewModel) {
+                            setContent {
+                                MyNavigation(
+                                    viewModel = viewModel
+                                )
+                            }
+                        }
+                    } else {
+                        MyNavigation(
+                            viewModel = viewModel
+                        )
+                    }
                 }
             }
         }

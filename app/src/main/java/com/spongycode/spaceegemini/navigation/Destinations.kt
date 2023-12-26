@@ -14,6 +14,11 @@ object ImageText : Destinations {
     override val route = "ImageText"
 }
 
+object Settings : Destinations {
+    override val route = "Settings"
+}
+
+
 object About : Destinations {
     override val route = "About"
 }

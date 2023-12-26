@@ -11,16 +11,19 @@ import com.spongycode.spaceegemini.screens.AboutScreen
 import com.spongycode.spaceegemini.screens.HomeScreen
 import com.spongycode.spaceegemini.screens.ImageText
 import com.spongycode.spaceegemini.screens.MultiTurn
+import com.spongycode.spaceegemini.screens.SetApiScreen
+import com.spongycode.spaceegemini.screens.SettingsScreen
 
 
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
 @Composable
 fun MyNavigation(
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    startDestination: String = Home.route
 ) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Home.route)
+    NavHost(navController = navController, startDestination = startDestination)
     {
         composable(Home.route)
         {
@@ -31,6 +34,9 @@ fun MyNavigation(
         }
         composable(ImageText.route) {
             ImageText(viewModel, navController)
+        }
+        composable(Settings.route) {
+            SettingsScreen(viewModel, navController)
         }
         composable(About.route) {
             AboutScreen(navController)
