@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.Chat
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.BlockThreshold
+import com.google.ai.client.generativeai.type.Content
 import com.google.ai.client.generativeai.type.HarmCategory
 import com.google.ai.client.generativeai.type.SafetySetting
 import com.google.ai.client.generativeai.type.content
@@ -20,7 +21,7 @@ import com.spongycode.util.getApiKey
 import com.spongycode.util.storeApiKey
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val dao: MessageDao) : ViewModel() {
     private val _singleResponse = MutableLiveData(mutableStateListOf<Message>())
     val singleResponse: LiveData<SnapshotStateList<Message>> = _singleResponse
 
@@ -36,6 +37,16 @@ class MainViewModel : ViewModel() {
     private var model: GenerativeModel? = null
     private var visionModel: GenerativeModel? = null
     private var chat: Chat? = null
+
+    init {
+        dao.getAllMessage().observeForever { allMessages ->
+            if (allMessages != null) {
+                val snapshotStateList = convertToSnapshotStateList(allMessages)
+                _conversationList.postValue(snapshotStateList)
+            }
+        }
+    }
+
     fun makeQuery(context: Context, prompt: String) {
         _singleResponse.value?.clear()
         _singleResponse.value?.add(Message(text = prompt, mode = Mode.USER))
@@ -100,6 +111,10 @@ class MainViewModel : ViewModel() {
                 _conversationList.value!!.lastIndex,
                 Message(text = output, mode = Mode.GEMINI, isGenerating = false)
             )
+            viewModelScope.launch {
+                dao.upsertMessage(Message(text = prompt, mode = Mode.USER, isGenerating = false))
+                dao.upsertMessage(Message(text = output, mode = Mode.GEMINI, isGenerating = false))
+            }
         }
     }
 
@@ -144,6 +159,9 @@ class MainViewModel : ViewModel() {
     fun clearContext() {
         _conversationList.value?.clear()
         chat = getChat()
+        viewModelScope.launch {
+            dao.deleteAllMessages()
+        }
     }
 
     fun validate(context: Context, apiKey: String) {
@@ -166,7 +184,7 @@ class MainViewModel : ViewModel() {
         _validationState.value = ValidationState.Idle
     }
 
-    private fun getChat() = model?.startChat(listOf())
+    private fun getChat() = model?.startChat(generatePreviousChats())
 
     private fun getModel(key: String, vision: Boolean = false) =
         GenerativeModel(
@@ -180,6 +198,21 @@ class MainViewModel : ViewModel() {
             )
         )
 
+    private fun generatePreviousChats(): List<Content> {
+        val history = mutableListOf<Content>()
+        for (message in conversationList.value.orEmpty()) {
+            history.add(content(role = if (message.mode == Mode.USER) "user" else "model") {
+                text(
+                    message.text
+                )
+            })
+        }
+        return history
+    }
+
+    private fun convertToSnapshotStateList(messages: List<Message>): SnapshotStateList<Message> {
+        return mutableStateListOf(*messages.toTypedArray())
+    }
 
     sealed class ValidationState {
         object Idle : ValidationState()
