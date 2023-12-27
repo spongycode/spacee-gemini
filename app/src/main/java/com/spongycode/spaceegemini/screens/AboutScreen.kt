@@ -17,10 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.spongycode.spaceegemini.R
 import com.spongycode.spaceegemini.navigation.TopBar
 
 @ExperimentalMaterial3Api
@@ -28,7 +30,12 @@ import com.spongycode.spaceegemini.navigation.TopBar
 @Composable
 fun AboutScreen(navController: NavHostController) {
     Scaffold(
-        topBar = { TopBar(name = "About", navController = navController) }
+        topBar = {
+            TopBar(
+                name = stringResource(id = R.string.about),
+                navController = navController
+            )
+        }
     ) {
         Column(Modifier.padding(top = 50.dp)) {
             AboutScreenComponent()

@@ -13,9 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.spongycode.spaceegemini.R
 import com.spongycode.spaceegemini.data.MainViewModel
 import com.spongycode.spaceegemini.navigation.SetApi
 import com.spongycode.spaceegemini.navigation.TopBar
@@ -28,7 +30,12 @@ fun SettingsScreen(
     navController: NavHostController
 ) {
     Scaffold(
-        topBar = { TopBar(name = "Settings", navController = navController) }
+        topBar = {
+            TopBar(
+                name = stringResource(id = R.string.settings),
+                navController = navController
+            )
+        }
     ) {
         Column(Modifier.padding(top = it.calculateTopPadding())) {
             Button(

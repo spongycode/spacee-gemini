@@ -20,10 +20,12 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import coil.ImageLoader
 import coil.request.ImageRequest
 import com.spongycode.spaceegemini.ApiType
+import com.spongycode.spaceegemini.R
 import com.spongycode.spaceegemini.components.ConversationArea
 import com.spongycode.spaceegemini.components.SelectedImageArea
 import com.spongycode.spaceegemini.components.TypingArea
@@ -59,7 +61,12 @@ fun ImageChatScreen(viewModel: MainViewModel, navController: NavHostController) 
         }
     }
 
-    Scaffold(topBar = { TopBar(name = "Image Chat", navController = navController) }) {
+    Scaffold(topBar = {
+        TopBar(
+            name = stringResource(id = R.string.image_mode),
+            navController = navController
+        )
+    }) {
         Column(
             modifier = Modifier
                 .padding(top = it.calculateTopPadding())
