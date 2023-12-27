@@ -1,30 +1,32 @@
 package com.spongycode.spaceegemini.navigation
 
+import com.spongycode.spaceegemini.App
+import com.spongycode.spaceegemini.R
+
 interface Destinations {
     val route: String
 }
 
-object Home : Destinations {
-    override val route = "Home"
+object SingleTurnMode : Destinations {
+    override val route: String = App.getInstance().getString(R.string.single_turn_mode)
 }
 
-object MultiTurn : Destinations {
-    override val route = "MultiTurn"
+object MultiTurnMode : Destinations {
+    override val route = App.getInstance().getString(R.string.multi_turn_mode)
 }
 
-object ImageText : Destinations {
-    override val route = "ImageText"
+object ImageMode : Destinations {
+    override val route = App.getInstance().getString(R.string.image_mode)
 }
 
 object Settings : Destinations {
-    override val route = "Settings"
+    override val route = App.getInstance().getString(R.string.settings)
 }
 
-object SetApiScreen : Destinations {
-    override val route = "SetApiScreen"
+object SetApi : Destinations {
+    override val route = App.getInstance().getString(R.string.set_api)
 }
-
 
 object About : Destinations {
-    override val route = "About"
+    override val route = App.getInstance().getString(R.string.about)
 }

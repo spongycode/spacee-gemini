@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ImageText(viewModel: MainViewModel, navController: NavHostController) {
+fun ImageChatScreen(viewModel: MainViewModel, navController: NavHostController) {
 
     val bitmaps: SnapshotStateList<Bitmap> = remember {
         mutableStateListOf()

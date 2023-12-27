@@ -35,7 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.spongycode.spaceegemini.data.MainViewModel
-import com.spongycode.spaceegemini.navigation.Home
+import com.spongycode.spaceegemini.navigation.MultiTurnMode
+import com.spongycode.spaceegemini.navigation.SetApi
 import com.spongycode.util.datastore
 import com.spongycode.util.getApiKey
 import kotlinx.coroutines.runBlocking
@@ -100,7 +101,8 @@ fun SetApiScreen(
                     if (viewModel.isHomeVisit.value == true) {
                         navController.navigateUp()
                     } else {
-                        navController.navigate(Home.route)
+                        navController.popBackStack(SetApi.route, true)
+                        navController.navigate(MultiTurnMode.route)
                     }
                 } else if (validationState == MainViewModel.ValidationState.Idle) {
                     viewModel.validate(context, text.text)

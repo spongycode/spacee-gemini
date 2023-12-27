@@ -15,10 +15,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import com.spongycode.spaceegemini.data.MainViewModel
 import com.spongycode.spaceegemini.data.MessageDatabase
-import com.spongycode.spaceegemini.navigation.Home
+import com.spongycode.spaceegemini.navigation.MultiTurnMode
 import com.spongycode.spaceegemini.navigation.MyNavigation
-import com.spongycode.spaceegemini.navigation.SetApiScreen
-import com.spongycode.spaceegemini.screens.SetApiScreen
+import com.spongycode.spaceegemini.navigation.SetApi
 import com.spongycode.spaceegemini.ui.theme.SpaceeGeminiTheme
 import com.spongycode.util.datastore
 import com.spongycode.util.getApiKey
@@ -51,9 +50,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     if (runBlocking { applicationContext.datastore.getApiKey().isEmpty() }) {
-                        MyNavigation(viewModel = viewModel, startDestination = SetApiScreen.route)
+                        MyNavigation(viewModel = viewModel, startDestination = SetApi.route)
                     } else {
-                        MyNavigation(viewModel = viewModel, startDestination = Home.route)
+                        MyNavigation(viewModel = viewModel, startDestination = MultiTurnMode.route)
                     }
                 }
             }

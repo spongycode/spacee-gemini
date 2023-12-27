@@ -8,9 +8,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.spongycode.spaceegemini.data.MainViewModel
 import com.spongycode.spaceegemini.screens.AboutScreen
-import com.spongycode.spaceegemini.screens.HomeScreen
-import com.spongycode.spaceegemini.screens.ImageText
-import com.spongycode.spaceegemini.screens.MultiTurn
+import com.spongycode.spaceegemini.screens.SingleTurnScreen
+import com.spongycode.spaceegemini.screens.ImageChatScreen
+import com.spongycode.spaceegemini.screens.MultiTurnScreen
 import com.spongycode.spaceegemini.screens.SetApiScreen
 import com.spongycode.spaceegemini.screens.SettingsScreen
 
@@ -20,26 +20,25 @@ import com.spongycode.spaceegemini.screens.SettingsScreen
 @Composable
 fun MyNavigation(
     viewModel: MainViewModel,
-    startDestination: String = Home.route
+    startDestination: String = SingleTurnMode.route
 ) {
     val navController = rememberNavController()
-    viewModel.makeHomeVisit()
     NavHost(navController = navController, startDestination = startDestination)
     {
-        composable(Home.route)
+        composable(MultiTurnMode.route) {
+            MultiTurnScreen(viewModel, navController)
+        }
+        composable(ImageMode.route) {
+            ImageChatScreen(viewModel, navController)
+        }
+        composable(SingleTurnMode.route)
         {
-            HomeScreen(viewModel, navController)
-        }
-        composable(MultiTurn.route) {
-            MultiTurn(viewModel, navController)
-        }
-        composable(ImageText.route) {
-            ImageText(viewModel, navController)
+            SingleTurnScreen(viewModel, navController)
         }
         composable(Settings.route) {
             SettingsScreen(viewModel, navController)
         }
-        composable(SetApiScreen.route) {
+        composable(SetApi.route) {
             SetApiScreen(viewModel, navController)
         }
         composable(About.route) {

@@ -1,5 +1,6 @@
 package com.spongycode.spaceegemini.navigation
 
+import com.spongycode.spaceegemini.App
 import com.spongycode.spaceegemini.R
 
 data class DrawerNavigationItem(
@@ -8,30 +9,30 @@ data class DrawerNavigationItem(
     val unselectedIcon: Int,
 )
 
-val Items = listOf(
+val items = listOf(
     DrawerNavigationItem(
-        title = "Home",
-        selectedIcon = R.drawable.home_selected,
-        unselectedIcon = R.drawable.home,
+        title = App.getInstance().getString(R.string.multi_turn_mode),
+        selectedIcon = R.drawable.multi_turn_icon,
+        unselectedIcon = R.drawable.multi_turn_icon,
     ),
     DrawerNavigationItem(
-        title = "MultiTurn",
-        selectedIcon = R.drawable.conversation_icon,
-        unselectedIcon = R.drawable.conversation_icon,
+        title = App.getInstance().getString(R.string.image_mode),
+        selectedIcon = R.drawable.image_mode_icon,
+        unselectedIcon = R.drawable.image_mode_icon,
     ),
     DrawerNavigationItem(
-        title = "ImageText",
-        selectedIcon = R.drawable.conversation_icon,
-        unselectedIcon = R.drawable.conversation_icon,
+        title = App.getInstance().getString(R.string.single_turn_mode),
+        selectedIcon = R.drawable.single_turn_icon,
+        unselectedIcon = R.drawable.single_turn_icon,
     ),
     DrawerNavigationItem(
-        title = "Settings",
-        selectedIcon = R.drawable.settings,
-        unselectedIcon = R.drawable.settings,
+        title = App.getInstance().getString(R.string.settings),
+        selectedIcon = R.drawable.settings_icon,
+        unselectedIcon = R.drawable.settings_icon,
     ),
     DrawerNavigationItem(
-        title = "About",
-        selectedIcon = R.drawable.info,
-        unselectedIcon = R.drawable.info,
+        title = App.getInstance().getString(R.string.about),
+        selectedIcon = R.drawable.about_icon,
+        unselectedIcon = R.drawable.about_icon,
     )
 )
