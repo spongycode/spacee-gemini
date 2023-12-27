@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <color android:color="#FFFFFFFF" />
+    </item>
+    <item
+        android:width="200dp"
+        android:height="200dp"
+        android:drawable="@drawable/gemini_text"
+        android:gravity="center" />
+</layer-list>
