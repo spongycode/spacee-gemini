@@ -189,6 +189,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
 
     fun makeHomeVisit() {
         _isHomeVisit.value = true
+        resetValidationState()
     }
 
     private fun getChat() = model?.startChat(generatePreviousChats())

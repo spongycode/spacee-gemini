@@ -6,4 +6,8 @@
     <string name="settings">Settings</string>
     <string name="set_api">Set Api</string>
     <string name="about">About</string>
+    <string name="person1">https://github.com/spongycode/</string>
+    <string name="person2">https://github.com/Vasanthadabala</string>
+    <string name="opensource">https://github.com/spongycode/spacee-gemini</string>
+    <string name="api_setup_link">https://ai.google.dev/tutorials/android_quickstart#set-up-project</string>
 </resources>

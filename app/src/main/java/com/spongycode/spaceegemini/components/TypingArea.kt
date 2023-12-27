@@ -6,6 +6,7 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,7 +41,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,8 +68,15 @@ fun TypingArea(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(
+                top = 10.dp,
+                bottom = 10.dp,
+                end = 10.dp,
+                start = if (apiType == ApiType.SINGLE_CHAT) 10.dp else 0.dp
+            )
             .background(Color.White),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
     ) {
 
         when (apiType) {
@@ -94,17 +100,14 @@ fun TypingArea(
         }
 
         OutlinedTextField(
-            singleLine = true,
             value = text,
             onValueChange = { newText -> text = newText },
             placeholder = { Text(text = "Ask a question") },
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .background(Color.White)
-                .padding(10.dp),
+                .background(Color.White),
             shape = RoundedCornerShape(28),
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(
                 onDone = { keyboardController?.hide() }
             ),
@@ -115,6 +118,7 @@ fun TypingArea(
                 unfocusedContainerColor = Color.White,
                 cursorColor = Color.Black
             ),
+            maxLines = 5,
             trailingIcon = {
                 Box(
                     modifier = Modifier.padding(end = 10.dp),
@@ -127,23 +131,23 @@ fun TypingArea(
                             modifier = Modifier
                                 .size(30.dp)
                                 .clickable {
-                                    if (text.text.isNotEmpty()) {
+                                    if (text.text.trim().isNotEmpty()) {
                                         keyboardController?.hide()
                                         focusManager.clearFocus()
                                         when (apiType) {
                                             ApiType.SINGLE_CHAT -> viewModel.makeQuery(
                                                 context,
-                                                text.text
+                                                text.text.trim()
                                             )
 
                                             ApiType.MULTI_CHAT -> viewModel.makeConversationQuery(
                                                 context,
-                                                text.text
+                                                text.text.trim()
                                             )
 
                                             ApiType.IMAGE_CHAT -> viewModel.makeImageQuery(
                                                 context,
-                                                text.text,
+                                                text.text.trim(),
                                                 bitmaps!!
                                             )
                                         }

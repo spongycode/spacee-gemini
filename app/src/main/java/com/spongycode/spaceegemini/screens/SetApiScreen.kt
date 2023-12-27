@@ -3,14 +3,20 @@ package com.spongycode.spaceegemini.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -27,16 +33,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.spongycode.spaceegemini.R
 import com.spongycode.spaceegemini.data.MainViewModel
 import com.spongycode.spaceegemini.navigation.MultiTurnMode
 import com.spongycode.spaceegemini.navigation.SetApi
+import com.spongycode.spaceegemini.ui.theme.DecentBlue
+import com.spongycode.spaceegemini.ui.theme.DecentGreen
+import com.spongycode.spaceegemini.ui.theme.DecentRed
 import com.spongycode.util.datastore
 import com.spongycode.util.getApiKey
 import kotlinx.coroutines.runBlocking
@@ -115,10 +132,10 @@ fun SetApiScreen(
             colors = ButtonDefaults.buttonColors(
                 containerColor = when (validationState) {
                     MainViewModel.ValidationState.Checking -> Color.DarkGray
-                    MainViewModel.ValidationState.Idle -> Color.Blue
-                    MainViewModel.ValidationState.Invalid -> Color.Red
-                    MainViewModel.ValidationState.Valid -> Color.Green
-                    null -> Color.Blue
+                    MainViewModel.ValidationState.Idle -> DecentBlue
+                    MainViewModel.ValidationState.Invalid -> DecentRed
+                    MainViewModel.ValidationState.Valid -> DecentGreen
+                    null -> DecentBlue
                 },
                 contentColor = Color.White
             )
@@ -135,6 +152,59 @@ fun SetApiScreen(
                 fontSize = 15.sp
             )
         }
+
+        Spacer(modifier = Modifier.padding(50.dp))
+
+        ApiSetupHelper()
+    }
+}
+
+@Composable
+fun ApiSetupHelper() {
+    val uriHandler = LocalUriHandler.current
+
+    val apiSetup = buildAnnotatedString {
+        append("Learn how to set up your own API key. ")
+        pushStringAnnotation(tag = "click", annotation = stringResource(id = R.string.api_setup_link))
+        withStyle(
+            style = SpanStyle(
+                color = Color.Blue,
+                textDecoration = TextDecoration.Underline
+            )
+        ) {
+            append("Click here")
+        }
+        pop()
+        append(" for details.")
+    }
+
+    Row(
+        modifier = Modifier
+            .background(Color.White)
+            .padding(horizontal = 10.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Icon(
+            modifier = Modifier.size(50.dp),
+            painter = painterResource(id = R.drawable.about_icon),
+            contentDescription = "help"
+        )
+        ClickableText(
+            modifier = Modifier.padding(10.dp),
+            text = apiSetup,
+            style = MaterialTheme.typography.titleMedium,
+            onClick = { offset ->
+                apiSetup.getStringAnnotations(
+                    tag = "click",
+                    start = offset,
+                    end = offset
+                ).firstOrNull()?.let {
+                    uriHandler.openUri(it.item)
+                }
+            }
+        )
     }
 }
 

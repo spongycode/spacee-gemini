@@ -36,7 +36,7 @@ fun MyNavigation(
             SingleTurnScreen(viewModel, navController)
         }
         composable(Settings.route) {
-            SettingsScreen(viewModel, navController)
+            SettingsScreen(navController)
         }
         composable(SetApi.route) {
             SetApiScreen(viewModel, navController)

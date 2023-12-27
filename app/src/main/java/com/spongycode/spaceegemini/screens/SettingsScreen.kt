@@ -1,7 +1,9 @@
 package com.spongycode.spaceegemini.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,15 +20,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.spongycode.spaceegemini.R
-import com.spongycode.spaceegemini.data.MainViewModel
 import com.spongycode.spaceegemini.navigation.SetApi
 import com.spongycode.spaceegemini.navigation.TopBar
+import com.spongycode.spaceegemini.ui.theme.DecentBlue
 
 @ExperimentalMaterial3Api
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SettingsScreen(
-    viewModel: MainViewModel,
     navController: NavHostController
 ) {
     Scaffold(
@@ -37,7 +38,12 @@ fun SettingsScreen(
             )
         }
     ) {
-        Column(Modifier.padding(top = it.calculateTopPadding())) {
+        Column(
+            Modifier
+                .fillMaxHeight()
+                .background(Color.White)
+                .padding(top = it.calculateTopPadding() * 3)
+        ) {
             Button(
                 onClick = {
                     navController.navigate(SetApi.route)
@@ -45,9 +51,9 @@ fun SettingsScreen(
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp),
+                    .padding(horizontal = 20.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Blue,
+                    containerColor = DecentBlue,
                     contentColor = Color.White
                 )
             ) {
