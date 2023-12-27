@@ -15,7 +15,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import com.spongycode.spaceegemini.data.MainViewModel
 import com.spongycode.spaceegemini.data.MessageDatabase
+import com.spongycode.spaceegemini.navigation.Home
 import com.spongycode.spaceegemini.navigation.MyNavigation
+import com.spongycode.spaceegemini.navigation.SetApiScreen
 import com.spongycode.spaceegemini.screens.SetApiScreen
 import com.spongycode.spaceegemini.ui.theme.SpaceeGeminiTheme
 import com.spongycode.util.datastore
@@ -49,17 +51,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     if (runBlocking { applicationContext.datastore.getApiKey().isEmpty() }) {
-                        SetApiScreen(viewModel) {
-                            setContent {
-                                MyNavigation(
-                                    viewModel = viewModel
-                                )
-                            }
-                        }
+                        MyNavigation(viewModel = viewModel, startDestination = SetApiScreen.route)
                     } else {
-                        MyNavigation(
-                            viewModel = viewModel
-                        )
+                        MyNavigation(viewModel = viewModel, startDestination = Home.route)
                     }
                 }
             }

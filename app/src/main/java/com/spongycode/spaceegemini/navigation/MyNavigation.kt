@@ -23,6 +23,7 @@ fun MyNavigation(
     startDestination: String = Home.route
 ) {
     val navController = rememberNavController()
+    viewModel.makeHomeVisit()
     NavHost(navController = navController, startDestination = startDestination)
     {
         composable(Home.route)
@@ -37,6 +38,9 @@ fun MyNavigation(
         }
         composable(Settings.route) {
             SettingsScreen(viewModel, navController)
+        }
+        composable(SetApiScreen.route) {
+            SetApiScreen(viewModel, navController)
         }
         composable(About.route) {
             AboutScreen(navController)

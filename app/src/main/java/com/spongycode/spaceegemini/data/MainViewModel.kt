@@ -34,6 +34,9 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
     private val _validationState = MutableLiveData<ValidationState>(ValidationState.Idle)
     val validationState: LiveData<ValidationState> = _validationState
 
+    private val _isHomeVisit = MutableLiveData<Boolean>(false)
+    val isHomeVisit: LiveData<Boolean> = _isHomeVisit
+
     private var model: GenerativeModel? = null
     private var visionModel: GenerativeModel? = null
     private var chat: Chat? = null
@@ -182,6 +185,10 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
 
     fun resetValidationState() {
         _validationState.value = ValidationState.Idle
+    }
+
+    fun makeHomeVisit() {
+        _isHomeVisit.value = true
     }
 
     private fun getChat() = model?.startChat(generatePreviousChats())

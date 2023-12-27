@@ -23,12 +23,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -47,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.spongycode.spaceegemini.data.MainViewModel
+import com.spongycode.spaceegemini.navigation.SetApiScreen
 import com.spongycode.spaceegemini.navigation.TopBar
 
 @ExperimentalMaterial3Api
@@ -60,82 +59,25 @@ fun SettingsScreen(
         topBar = { TopBar(name = "Settings", navController = navController) }
     ) {
         Column(Modifier.padding(top = it.calculateTopPadding())) {
-            SettingsScreenComponent(viewModel = viewModel)
+            Button(
+                onClick = {
+                    navController.navigate(SetApiScreen.route)
+                },
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Blue,
+                    contentColor = Color.White
+                )
+            ) {
+                Text(
+                    modifier = Modifier.padding(8.dp),
+                    text = "Change Api Key",
+                    fontSize = 15.sp
+                )
+            }
         }
     }
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun SettingsScreenComponent(viewModel: MainViewModel) {
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val focusManager = LocalFocusManager.current
-    var text by remember { mutableStateOf(TextFieldValue("")) }
-    val validationState =
-        viewModel.validationState.observeAsState().value
-    val context = LocalContext.current
-    OutlinedTextField(
-        singleLine = true,
-        value = text,
-        onValueChange = { newText -> text = newText },
-        placeholder = { Text(text = "Enter your api key") },
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
-            .padding(10.dp),
-        shape = RoundedCornerShape(28),
-        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(
-            onDone = { keyboardController?.hide() }
-        ),
-        colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.Black,
-            unfocusedIndicatorColor = Color.LightGray,
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            cursorColor = Color.Black
-        ),
-        trailingIcon = {
-            Box(
-                modifier = Modifier.padding(end = 10.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                if (validationState != MainViewModel.ValidationState.Checking) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        tint = Color.Green,
-                        contentDescription = "validate",
-                        modifier = Modifier
-                            .size(30.dp)
-                            .clickable {
-                                if (text.text.isNotEmpty()) {
-                                    keyboardController?.hide()
-                                    focusManager.clearFocus()
-                                    viewModel.validate(context, text.text)
-                                }
-                            }
-                    )
-                } else {
-                    val strokeWidth = 2.dp
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .drawBehind {
-                                drawCircle(
-                                    Color.Black,
-                                    radius = size.width / 2 - strokeWidth.toPx() / 2,
-                                    style = Stroke(strokeWidth.toPx())
-                                )
-                            }
-                            .size(30.dp),
-                        color = Color.LightGray,
-                        strokeWidth = strokeWidth
-                    )
-                }
-            }
-        },
-        textStyle = TextStyle(
-            fontWeight = FontWeight.W500,
-            fontSize = 18.sp
-        )
-    )
 }

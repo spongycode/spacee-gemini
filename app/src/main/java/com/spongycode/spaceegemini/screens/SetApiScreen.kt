@@ -33,21 +33,26 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.spongycode.spaceegemini.data.MainViewModel
+import com.spongycode.spaceegemini.navigation.Home
+import com.spongycode.util.datastore
+import com.spongycode.util.getApiKey
+import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SetApiScreen(
     viewModel: MainViewModel,
-    onApiKeyAdded: () -> Unit
+    navController: NavHostController
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-    var text by remember { mutableStateOf(TextFieldValue("")) }
     val validationState =
         viewModel.validationState.observeAsState().value
     val context = LocalContext.current
+
+    var text by remember { mutableStateOf(TextFieldValue(runBlocking { context.datastore.getApiKey() })) }
 
     Column(
         modifier = Modifier
@@ -91,9 +96,14 @@ fun SetApiScreen(
             onClick = {
                 keyboardController?.hide()
                 focusManager.clearFocus()
-                viewModel.validate(context, text.text)
                 if (validationState == MainViewModel.ValidationState.Valid) {
-                    onApiKeyAdded()
+                    if (viewModel.isHomeVisit.value == true) {
+                        navController.navigateUp()
+                    } else {
+                        navController.navigate(Home.route)
+                    }
+                } else if (validationState == MainViewModel.ValidationState.Idle) {
+                    viewModel.validate(context, text.text)
                 }
             },
             shape = RoundedCornerShape(10.dp),
