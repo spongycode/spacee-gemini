@@ -12,4 +12,5 @@
     <string name="api_setup_link">https://ai.google.dev/tutorials/android_quickstart#set-up-project</string>
     <string name="error_occurred">Some error occurred.</string>
     <string name="generating">Generating…</string>
+    <string name="text_copied">Text copied to clipboard.</string>
 </resources>
