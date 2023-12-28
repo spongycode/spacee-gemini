@@ -188,12 +188,12 @@ fun TypingArea(
                                         keyboardController?.hide()
                                         focusManager.clearFocus()
                                         when (apiType) {
-                                            ApiType.SINGLE_CHAT -> viewModel.makeQuery(
+                                            ApiType.SINGLE_CHAT -> viewModel.makeSingleTurnQuery(
                                                 context,
                                                 text.text.trim()
                                             )
 
-                                            ApiType.MULTI_CHAT -> viewModel.makeConversationQuery(
+                                            ApiType.MULTI_CHAT -> viewModel.makeMultiTurnQuery(
                                                 context,
                                                 text.text.trim()
                                             )

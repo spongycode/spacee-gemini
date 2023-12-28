@@ -15,6 +15,10 @@ import com.google.ai.client.generativeai.type.Content
 import com.google.ai.client.generativeai.type.HarmCategory
 import com.google.ai.client.generativeai.type.SafetySetting
 import com.google.ai.client.generativeai.type.content
+import com.spongycode.spaceegemini.ApiType
+import com.spongycode.spaceegemini.ApiType.IMAGE_CHAT
+import com.spongycode.spaceegemini.ApiType.MULTI_CHAT
+import com.spongycode.spaceegemini.ApiType.SINGLE_CHAT
 import com.spongycode.spaceegemini.Mode
 import com.spongycode.spaceegemini.R
 import com.spongycode.util.datastore
@@ -51,7 +55,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
         }
     }
 
-    fun makeQuery(context: Context, prompt: String) {
+    fun makeSingleTurnQuery(context: Context, prompt: String) {
         _singleResponse.value?.clear()
         _singleResponse.value?.add(Message(text = prompt, mode = Mode.USER))
         _singleResponse.value?.add(
@@ -66,24 +70,10 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
                 model = getModel(key = context.datastore.getApiKey())
             }
         }
-        viewModelScope.launch {
-            var output = ""
-            model?.generateContentStream(prompt)?.collect { chunk ->
-                output += chunk.text.toString()
-                output.trimStart()
-                _singleResponse.value?.set(
-                    _singleResponse.value!!.lastIndex,
-                    Message(text = output, mode = Mode.GEMINI, isGenerating = true)
-                )
-            }
-            _singleResponse.value?.set(
-                _singleResponse.value!!.lastIndex,
-                Message(text = output, mode = Mode.GEMINI, isGenerating = false)
-            )
-        }
+        makeGeneralQuery(SINGLE_CHAT, _singleResponse, prompt)
     }
 
-    fun makeConversationQuery(context: Context, prompt: String) {
+    fun makeMultiTurnQuery(context: Context, prompt: String) {
         _conversationList.value?.add(Message(text = prompt, mode = Mode.USER))
         _conversationList.value?.add(
             Message(
@@ -101,25 +91,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
         if (chat == null) {
             chat = getChat()
         }
-        viewModelScope.launch {
-            var output = ""
-            chat?.sendMessageStream(prompt)?.collect { chunk ->
-                output += chunk.text.toString()
-                output.trimStart()
-                _conversationList.value?.set(
-                    _conversationList.value!!.lastIndex,
-                    Message(text = output, mode = Mode.GEMINI, isGenerating = true)
-                )
-            }
-            _conversationList.value?.set(
-                _conversationList.value!!.lastIndex,
-                Message(text = output, mode = Mode.GEMINI, isGenerating = false)
-            )
-            viewModelScope.launch {
-                dao.upsertMessage(Message(text = prompt, mode = Mode.USER, isGenerating = false))
-                dao.upsertMessage(Message(text = output, mode = Mode.GEMINI, isGenerating = false))
-            }
-        }
+        makeGeneralQuery(MULTI_CHAT, _conversationList, prompt)
     }
 
     fun makeImageQuery(context: Context, prompt: String, bitmaps: List<Bitmap>) {
@@ -143,32 +115,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
             }
             text(prompt)
         }
-        viewModelScope.launch {
-            var output = ""
-            try {
-                visionModel?.generateContentStream(inputContent)?.collect { chunk ->
-                    output += chunk.text.toString()
-                    output.trimStart()
-                    _imageResponse.value?.set(
-                        _imageResponse.value!!.lastIndex,
-                        Message(text = output, mode = Mode.GEMINI, isGenerating = true)
-                    )
-                }
-                _imageResponse.value?.set(
-                    _imageResponse.value!!.lastIndex,
-                    Message(text = output, mode = Mode.GEMINI, isGenerating = false)
-                )
-            } catch (_: Exception) {
-                _imageResponse.value?.set(
-                    _imageResponse.value!!.lastIndex,
-                    Message(
-                        text = context.getString(R.string.error_occurred),
-                        mode = Mode.GEMINI,
-                        isGenerating = false
-                    )
-                )
-            }
-        }
+        makeGeneralQuery(IMAGE_CHAT, _imageResponse, inputContent)
     }
 
     fun clearContext() {
@@ -202,6 +149,54 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
     fun makeHomeVisit() {
         _isHomeVisit.value = true
         resetValidationState()
+    }
+
+    private fun makeGeneralQuery(
+        apiType: ApiType,
+        result: MutableLiveData<SnapshotStateList<Message>>,
+        feed: Any
+    ) {
+        viewModelScope.launch {
+            var output = ""
+            try {
+                val stream = when (apiType) {
+                    SINGLE_CHAT -> model?.generateContentStream(feed as String)
+                    MULTI_CHAT -> chat?.sendMessageStream(feed as String)
+                    IMAGE_CHAT -> visionModel?.generateContentStream(feed as Content)
+                }
+                stream?.collect { chunk ->
+                    output += chunk.text.toString()
+                    output.trimStart()
+                    result.value?.set(
+                        result.value!!.lastIndex,
+                        Message(text = output, mode = Mode.GEMINI, isGenerating = true)
+                    )
+                }
+                result.value?.set(
+                    result.value!!.lastIndex,
+                    Message(text = output, mode = Mode.GEMINI, isGenerating = false)
+                )
+                if (apiType == MULTI_CHAT) {
+                    viewModelScope.launch {
+                        dao.upsertMessage(
+                            Message(text = feed as String, mode = Mode.USER, isGenerating = false)
+                        )
+                        dao.upsertMessage(
+                            Message(text = output, mode = Mode.GEMINI, isGenerating = false)
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                result.value?.set(
+                    result.value!!.lastIndex,
+                    Message(
+                        text = e.message.toString(),
+                        mode = Mode.GEMINI,
+                        isGenerating = false
+                    )
+                )
+            }
+        }
     }
 
     private fun getChat() = model?.startChat(generatePreviousChats())

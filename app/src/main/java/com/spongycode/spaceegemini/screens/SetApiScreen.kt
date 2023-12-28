@@ -1,5 +1,6 @@
 package com.spongycode.spaceegemini.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,9 +16,11 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -51,6 +54,7 @@ import com.spongycode.spaceegemini.R
 import com.spongycode.spaceegemini.data.MainViewModel
 import com.spongycode.spaceegemini.navigation.MultiTurnMode
 import com.spongycode.spaceegemini.navigation.SetApi
+import com.spongycode.spaceegemini.navigation.TopBar
 import com.spongycode.spaceegemini.ui.theme.DecentBlue
 import com.spongycode.spaceegemini.ui.theme.DecentGreen
 import com.spongycode.spaceegemini.ui.theme.DecentRed
@@ -58,7 +62,8 @@ import com.spongycode.util.datastore
 import com.spongycode.util.getApiKey
 import kotlinx.coroutines.runBlocking
 
-@OptIn(ExperimentalComposeUiApi::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SetApiScreen(
     viewModel: MainViewModel,
@@ -71,91 +76,100 @@ fun SetApiScreen(
     val context = LocalContext.current
 
     var text by remember { mutableStateOf(TextFieldValue(runBlocking { context.datastore.getApiKey() })) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        OutlinedTextField(
-            singleLine = true,
-            value = text,
-            onValueChange = { newText ->
-                text = newText
-                viewModel.resetValidationState()
-            },
-            placeholder = { Text(text = "Enter your api key") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White)
-                .padding(10.dp),
-            shape = RoundedCornerShape(28),
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(
-                onDone = { keyboardController?.hide() }
-            ),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Black,
-                unfocusedIndicatorColor = Color.LightGray,
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                cursorColor = Color.Black
-            ),
-            textStyle = TextStyle(
-                fontWeight = FontWeight.W500,
-                fontSize = 18.sp
-            )
-        )
-
-        Button(
-            onClick = {
-                keyboardController?.hide()
-                focusManager.clearFocus()
-                if (validationState == MainViewModel.ValidationState.Valid) {
-                    if (viewModel.isHomeVisit.value == true) {
-                        navController.navigateUp()
-                    } else {
-                        navController.popBackStack(SetApi.route, true)
-                        navController.navigate(MultiTurnMode.route)
-                    }
-                } else if (validationState == MainViewModel.ValidationState.Idle) {
-                    viewModel.validate(context, text.text)
-                }
-            },
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = when (validationState) {
-                    MainViewModel.ValidationState.Checking -> Color.DarkGray
-                    MainViewModel.ValidationState.Idle -> DecentBlue
-                    MainViewModel.ValidationState.Invalid -> DecentRed
-                    MainViewModel.ValidationState.Valid -> DecentGreen
-                    null -> DecentBlue
-                },
-                contentColor = Color.White
-            )
-        ) {
-            Text(
-                modifier = Modifier.padding(8.dp),
-                text = when (validationState) {
-                    MainViewModel.ValidationState.Checking -> "Validating..."
-                    MainViewModel.ValidationState.Idle -> "Validate"
-                    MainViewModel.ValidationState.Invalid -> "Invalid Key"
-                    MainViewModel.ValidationState.Valid -> "Proceed"
-                    else -> "NULL"
-                },
-                fontSize = 15.sp
+    Scaffold(
+        topBar = {
+            TopBar(
+                name = stringResource(id = R.string.set_api),
+                navController = navController,
+                showNavigationIcon = viewModel.isHomeVisit.value
             )
         }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            OutlinedTextField(
+                singleLine = true,
+                value = text,
+                onValueChange = { newText ->
+                    text = newText
+                    viewModel.resetValidationState()
+                },
+                placeholder = { Text(text = "Enter your api key") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(10.dp),
+                shape = RoundedCornerShape(28),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = { keyboardController?.hide() }
+                ),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Black,
+                    unfocusedIndicatorColor = Color.LightGray,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    cursorColor = Color.Black
+                ),
+                textStyle = TextStyle(
+                    fontWeight = FontWeight.W500,
+                    fontSize = 18.sp
+                )
+            )
 
-        Spacer(modifier = Modifier.padding(50.dp))
+            Button(
+                onClick = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                    if (validationState == MainViewModel.ValidationState.Valid) {
+                        if (viewModel.isHomeVisit.value == true) {
+                            navController.navigateUp()
+                        } else {
+                            navController.popBackStack(SetApi.route, true)
+                            navController.navigate(MultiTurnMode.route)
+                        }
+                    } else if (validationState == MainViewModel.ValidationState.Idle) {
+                        viewModel.validate(context, text.text)
+                    }
+                },
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = when (validationState) {
+                        MainViewModel.ValidationState.Checking -> Color.DarkGray
+                        MainViewModel.ValidationState.Idle -> DecentBlue
+                        MainViewModel.ValidationState.Invalid -> DecentRed
+                        MainViewModel.ValidationState.Valid -> DecentGreen
+                        null -> DecentBlue
+                    },
+                    contentColor = Color.White
+                )
+            ) {
+                Text(
+                    modifier = Modifier.padding(8.dp),
+                    text = when (validationState) {
+                        MainViewModel.ValidationState.Checking -> "Validating..."
+                        MainViewModel.ValidationState.Idle -> "Validate"
+                        MainViewModel.ValidationState.Invalid -> "Invalid Key"
+                        MainViewModel.ValidationState.Valid -> "Proceed"
+                        else -> "NULL"
+                    },
+                    fontSize = 15.sp
+                )
+            }
 
-        ApiSetupHelper()
+            Spacer(modifier = Modifier.padding(50.dp))
+
+            ApiSetupHelper()
+        }
     }
 }
 
@@ -165,7 +179,10 @@ fun ApiSetupHelper() {
 
     val apiSetup = buildAnnotatedString {
         append("Learn how to set up your own API key. ")
-        pushStringAnnotation(tag = "click", annotation = stringResource(id = R.string.api_setup_link))
+        pushStringAnnotation(
+            tag = "click",
+            annotation = stringResource(id = R.string.api_setup_link)
+        )
         withStyle(
             style = SpanStyle(
                 color = Color.Blue,

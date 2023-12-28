@@ -43,6 +43,7 @@ class MainActivity : ComponentActivity() {
 
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_SpaceeGemini)
         super.onCreate(savedInstanceState)
         setContent {
             SpaceeGeminiTheme {

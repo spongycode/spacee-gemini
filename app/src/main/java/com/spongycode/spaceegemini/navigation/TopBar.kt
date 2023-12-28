@@ -19,7 +19,7 @@ import androidx.navigation.NavHostController
 
 @ExperimentalMaterial3Api
 @Composable
-fun TopBar(name: String, navController: NavHostController) {
+fun TopBar(name: String, navController: NavHostController, showNavigationIcon: Boolean? = true) {
     CenterAlignedTopAppBar(
         title = {
             Text(
@@ -29,13 +29,15 @@ fun TopBar(name: String, navController: NavHostController) {
             )
         },
         navigationIcon = {
-            IconButton(
-                onClick = { navController.navigateUp() }) {
-                Icon(
-                    Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    modifier = Modifier.size(26.dp)
-                )
+            if (showNavigationIcon == true) {
+                IconButton(
+                    onClick = { navController.navigateUp() }) {
+                    Icon(
+                        Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier.size(26.dp)
+                    )
+                }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
