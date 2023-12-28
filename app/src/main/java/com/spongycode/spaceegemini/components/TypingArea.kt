@@ -1,5 +1,6 @@
 package com.spongycode.spaceegemini.components
 
+import android.Manifest
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -14,9 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -54,7 +57,8 @@ fun TypingArea(
     viewModel: MainViewModel,
     apiType: ApiType,
     bitmaps: SnapshotStateList<Bitmap>? = null,
-    launcherMultipleImages: ManagedActivityResultLauncher<String, List<@JvmSuppressWildcards Uri>>? = null
+    galleryLauncher: ManagedActivityResultLauncher<String, List<@JvmSuppressWildcards Uri>>? = null,
+    permissionLauncher: ManagedActivityResultLauncher<String, Boolean>? = null
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -79,6 +83,36 @@ fun TypingArea(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
 
+        val options = listOf("Camera", "Gallery")
+
+        var expanded by remember { mutableStateOf(false) }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = {
+                expanded = false
+            }
+        ) {
+            DropdownMenuItem(
+                onClick = {
+                    expanded = false
+                    permissionLauncher?.launch(Manifest.permission.CAMERA)
+                }
+            ) {
+                Text(text = "Camera")
+            }
+            DropdownMenuItem(
+                onClick = {
+                    expanded = false
+                    galleryLauncher?.launch("image/*")
+                }
+            ) {
+                Text(text = "Gallery")
+            }
+
+        }
+
+
         when (apiType) {
             ApiType.MULTI_CHAT -> IconButton(onClick = { viewModel.clearContext() }
             ) {
@@ -88,7 +122,9 @@ fun TypingArea(
                 )
             }
 
-            ApiType.IMAGE_CHAT -> IconButton(onClick = { launcherMultipleImages?.launch("image/*") }
+            ApiType.IMAGE_CHAT -> IconButton(onClick = {
+                expanded = true
+            }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_add_a_photo_24),
@@ -131,7 +167,10 @@ fun TypingArea(
                             modifier = Modifier
                                 .size(30.dp)
                                 .clickable {
-                                    if (text.text.trim().isNotEmpty()) {
+                                    if (text.text
+                                            .trim()
+                                            .isNotEmpty()
+                                    ) {
                                         keyboardController?.hide()
                                         focusManager.clearFocus()
                                         when (apiType) {

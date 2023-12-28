@@ -52,7 +52,8 @@ fun SingleTurnScreen(
                 viewModel = viewModel,
                 apiType = ApiType.SINGLE_CHAT,
                 bitmaps = null,
-                launcherMultipleImages = null
+                galleryLauncher = null,
+                permissionLauncher = null
             )
         }
     }

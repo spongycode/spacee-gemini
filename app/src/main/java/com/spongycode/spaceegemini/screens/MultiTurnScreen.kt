@@ -131,7 +131,8 @@ fun MultiTurnScreen(
                     viewModel = viewModel,
                     apiType = ApiType.MULTI_CHAT,
                     bitmaps = null,
-                    launcherMultipleImages = null
+                    galleryLauncher = null,
+                    permissionLauncher = null
                 )
             }
         }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,7 +50,23 @@ fun ImageChatScreen(viewModel: MainViewModel, navController: NavHostController) 
 
     val coroutineScope = rememberCoroutineScope()
 
-    val launcherMultipleImages = rememberLauncherForActivityResult(
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()
+    ) {
+        if (it != null) {
+            bitmaps.add(it)
+        }
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            cameraLauncher.launch()
+        }
+    }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
     ) {
         it.forEach { uri ->
@@ -85,7 +102,8 @@ fun ImageChatScreen(viewModel: MainViewModel, navController: NavHostController) 
                 viewModel = viewModel,
                 apiType = ApiType.IMAGE_CHAT,
                 bitmaps = bitmaps,
-                launcherMultipleImages = launcherMultipleImages
+                galleryLauncher = galleryLauncher,
+                permissionLauncher = permissionLauncher
             )
         }
     }

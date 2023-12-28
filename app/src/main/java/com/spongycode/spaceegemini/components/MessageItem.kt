@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,15 +50,17 @@ fun MessageItem(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.W600, text = when (mode) {
                     Mode.GEMINI -> "GEMINI"
-                    Mode.USER -> "USER"
+                    Mode.USER -> "YOU"
                 }
             )
         }
-        Text(
-            modifier = Modifier.padding(start = 35.dp),
-            fontWeight = FontWeight.W500,
-            fontSize = 15.sp,
-            text = text
-        )
+        SelectionContainer {
+            Text(
+                modifier = Modifier.padding(start = 35.dp),
+                fontWeight = FontWeight.W500,
+                fontSize = 15.sp,
+                text = text
+            )
+        }
     }
 }
