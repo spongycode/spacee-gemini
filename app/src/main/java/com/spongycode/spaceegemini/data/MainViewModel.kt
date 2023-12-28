@@ -16,6 +16,7 @@ import com.google.ai.client.generativeai.type.HarmCategory
 import com.google.ai.client.generativeai.type.SafetySetting
 import com.google.ai.client.generativeai.type.content
 import com.spongycode.spaceegemini.Mode
+import com.spongycode.spaceegemini.R
 import com.spongycode.util.datastore
 import com.spongycode.util.getApiKey
 import com.spongycode.util.storeApiKey
@@ -55,7 +56,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
         _singleResponse.value?.add(Message(text = prompt, mode = Mode.USER))
         _singleResponse.value?.add(
             Message(
-                text = "Generating...",
+                text = context.getString(R.string.generating),
                 mode = Mode.GEMINI,
                 isGenerating = true
             )
@@ -86,7 +87,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
         _conversationList.value?.add(Message(text = prompt, mode = Mode.USER))
         _conversationList.value?.add(
             Message(
-                text = "Generating...",
+                text = context.getString(R.string.generating),
                 mode = Mode.GEMINI,
                 isGenerating = true
             )
@@ -126,7 +127,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
         _imageResponse.value?.add(Message(text = prompt, mode = Mode.USER))
         _imageResponse.value?.add(
             Message(
-                text = "Generating...",
+                text = context.getString(R.string.generating),
                 mode = Mode.GEMINI,
                 isGenerating = true
             )
@@ -137,25 +138,36 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
             }
         }
         val inputContent = content {
-            bitmaps.forEach {
+            bitmaps.take(4).forEach {
                 image(it)
             }
             text(prompt)
         }
         viewModelScope.launch {
             var output = ""
-            visionModel?.generateContentStream(inputContent)?.collect { chunk ->
-                output += chunk.text.toString()
-                output.trimStart()
+            try {
+                visionModel?.generateContentStream(inputContent)?.collect { chunk ->
+                    output += chunk.text.toString()
+                    output.trimStart()
+                    _imageResponse.value?.set(
+                        _imageResponse.value!!.lastIndex,
+                        Message(text = output, mode = Mode.GEMINI, isGenerating = true)
+                    )
+                }
                 _imageResponse.value?.set(
                     _imageResponse.value!!.lastIndex,
-                    Message(text = output, mode = Mode.GEMINI, isGenerating = true)
+                    Message(text = output, mode = Mode.GEMINI, isGenerating = false)
+                )
+            } catch (_: Exception) {
+                _imageResponse.value?.set(
+                    _imageResponse.value!!.lastIndex,
+                    Message(
+                        text = context.getString(R.string.error_occurred),
+                        mode = Mode.GEMINI,
+                        isGenerating = false
+                    )
                 )
             }
-            _imageResponse.value?.set(
-                _imageResponse.value!!.lastIndex,
-                Message(text = output, mode = Mode.GEMINI, isGenerating = false)
-            )
         }
     }
 

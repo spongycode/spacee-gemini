@@ -10,14 +10,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
@@ -83,7 +83,6 @@ fun TypingArea(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
 
-        val options = listOf("Camera", "Gallery")
 
         var expanded by remember { mutableStateOf(false) }
 
@@ -99,7 +98,13 @@ fun TypingArea(
                     permissionLauncher?.launch(Manifest.permission.CAMERA)
                 }
             ) {
-                Text(text = "Camera")
+                Image(
+                    modifier = Modifier.size(25.dp),
+                    painter = painterResource(id = R.drawable.add_camera_icon),
+                    contentDescription = "camera"
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(text = "Camera", fontSize = 15.sp, fontWeight = FontWeight.W600)
             }
             DropdownMenuItem(
                 onClick = {
@@ -107,17 +112,24 @@ fun TypingArea(
                     galleryLauncher?.launch("image/*")
                 }
             ) {
-                Text(text = "Gallery")
+                Image(
+                    modifier = Modifier.size(25.dp),
+                    painter = painterResource(id = R.drawable.add_gallery_icon),
+                    contentDescription = "gallery"
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(text = "Gallery", fontSize = 15.sp, fontWeight = FontWeight.W600)
             }
-
         }
 
 
         when (apiType) {
             ApiType.MULTI_CHAT -> IconButton(onClick = { viewModel.clearContext() }
             ) {
-                Image(
+                Icon(
+                    modifier = Modifier.size(30.dp),
                     painter = painterResource(id = R.drawable.refresh),
+                    tint = Color.Black,
                     contentDescription = "refresh"
                 )
             }
@@ -126,8 +138,9 @@ fun TypingArea(
                 expanded = true
             }
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_add_a_photo_24),
+                Image(
+                    modifier = Modifier.size(30.dp),
+                    painter = painterResource(id = R.drawable.add_icon),
                     contentDescription = "add"
                 )
             }
@@ -162,14 +175,15 @@ fun TypingArea(
                 ) {
                     if (isGenerating != true) {
                         Icon(
-                            imageVector = Icons.Default.Send,
+                            painter = painterResource(id = R.drawable.send_icon),
+                            tint = Color.Black,
                             contentDescription = "send",
                             modifier = Modifier
                                 .size(30.dp)
                                 .clickable {
                                     if (text.text
                                             .trim()
-                                            .isNotEmpty()
+                                            .isNotEmpty() && (apiType != ApiType.IMAGE_CHAT || bitmaps!!.isNotEmpty())
                                     ) {
                                         keyboardController?.hide()
                                         focusManager.clearFocus()

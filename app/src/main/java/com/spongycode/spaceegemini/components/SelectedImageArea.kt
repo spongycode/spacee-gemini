@@ -27,6 +27,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.spongycode.spaceegemini.ui.theme.DecentRed
 
 @Composable
 fun SelectedImageArea(bitmaps: SnapshotStateList<Bitmap>) {
@@ -58,11 +59,12 @@ fun SelectedImageArea(bitmaps: SnapshotStateList<Bitmap>) {
                             IntOffset(x = +offsetInPx, y = -offsetInPx)
                         }
                         .clip(CircleShape)
-                        .background(Color.Red)
+                        .background(DecentRed)
                         .size(iconSize)
                         .align(Alignment.TopEnd)
                 ) {
                     Icon(
+                        modifier = Modifier.padding(3.dp),
                         imageVector = Icons.Rounded.Close,
                         contentDescription = "close",
                         tint = Color.White

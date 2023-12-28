@@ -10,4 +10,6 @@
     <string name="person2">https://github.com/Vasanthadabala</string>
     <string name="opensource">https://github.com/spongycode/spacee-gemini</string>
     <string name="api_setup_link">https://ai.google.dev/tutorials/android_quickstart#set-up-project</string>
+    <string name="error_occurred">Some error occurred.</string>
+    <string name="generating">Generating…</string>
 </resources>
