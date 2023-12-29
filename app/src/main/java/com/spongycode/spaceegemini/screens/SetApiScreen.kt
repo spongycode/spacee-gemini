@@ -159,19 +159,91 @@ fun SetApiScreen(
                         MainViewModel.ValidationState.Checking -> "Validating..."
                         MainViewModel.ValidationState.Idle -> "Validate"
                         MainViewModel.ValidationState.Invalid -> "Invalid Key"
-                        MainViewModel.ValidationState.Valid -> "Proceed"
+                        MainViewModel.ValidationState.Valid -> "Continue"
                         else -> "NULL"
                     },
                     fontSize = 15.sp
                 )
             }
 
-            Spacer(modifier = Modifier.padding(50.dp))
+            Spacer(modifier = Modifier.padding(30.dp))
 
             ApiSetupHelper()
+
+            if (viewModel.isHomeVisit.value != true) {
+                Spacer(modifier = Modifier.padding(10.dp))
+                DemoApiButton(viewModel, navController)
+            }
         }
     }
 }
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun DemoApiButton(viewModel: MainViewModel, navController: NavHostController) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
+    val demoApiState =
+        viewModel.demoApiState.observeAsState().value
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Text(
+            text = "or,",
+            style = MaterialTheme.typography.titleMedium,
+        )
+        Button(
+            onClick = {
+                keyboardController?.hide()
+                focusManager.clearFocus()
+                if (demoApiState == MainViewModel.ValidationState.Valid) {
+                    if (viewModel.isHomeVisit.value != true) {
+                        navController.popBackStack(SetApi.route, true)
+                        navController.navigate(MultiTurnMode.route)
+                    }
+                } else if (demoApiState == MainViewModel.ValidationState.Idle ||
+                    demoApiState == MainViewModel.ValidationState.Invalid
+                ) {
+                    viewModel.makeDemoApiRequest(context)
+                }
+            },
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = when (demoApiState) {
+                    MainViewModel.ValidationState.Checking -> Color.DarkGray
+                    MainViewModel.ValidationState.Idle -> Color.Black
+                    MainViewModel.ValidationState.Invalid -> DecentRed
+                    MainViewModel.ValidationState.Valid -> DecentGreen
+                    null -> DecentBlue
+                },
+                contentColor = Color.White
+            )
+        ) {
+            Text(
+                modifier = Modifier.padding(8.dp),
+                text = when (demoApiState) {
+                    MainViewModel.ValidationState.Checking -> "Fetching..."
+                    MainViewModel.ValidationState.Idle -> "Use Demo API"
+                    MainViewModel.ValidationState.Invalid -> "Try again"
+                    MainViewModel.ValidationState.Valid -> "Continue"
+                    else -> "NULL"
+                },
+                fontSize = 15.sp
+            )
+        }
+        Text(
+            text = stringResource(R.string.testing_purpose),
+            style = MaterialTheme.typography.titleSmall,
+        )
+    }
+}
+
 
 @Composable
 fun ApiSetupHelper() {

@@ -50,7 +50,13 @@ class MainActivity : ComponentActivity() {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                    if (runBlocking { applicationContext.datastore.getApiKey().isEmpty() }) {
+                    if (runBlocking {
+                            val key = applicationContext.datastore.getApiKey()
+                            if (key.isNotEmpty()) {
+                                viewModel.updateApiKey(key)
+                            }
+                            key.isEmpty()
+                        }) {
                         MyNavigation(viewModel = viewModel, startDestination = SetApi.route)
                     } else {
                         MyNavigation(viewModel = viewModel, startDestination = MultiTurnMode.route)

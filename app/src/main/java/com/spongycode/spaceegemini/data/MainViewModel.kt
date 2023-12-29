@@ -22,8 +22,16 @@ import com.spongycode.spaceegemini.ApiType.SINGLE_CHAT
 import com.spongycode.spaceegemini.Mode
 import com.spongycode.spaceegemini.R
 import com.spongycode.util.datastore
-import com.spongycode.util.getApiKey
 import com.spongycode.util.storeApiKey
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
+import io.ktor.client.request.parameter
+import io.ktor.client.request.url
+import io.ktor.client.statement.HttpResponse
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val dao: MessageDao) : ViewModel() {
@@ -38,6 +46,11 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
 
     private val _validationState = MutableLiveData<ValidationState>(ValidationState.Idle)
     val validationState: LiveData<ValidationState> = _validationState
+
+    private val _demoApiState = MutableLiveData<ValidationState>(ValidationState.Idle)
+    val demoApiState: LiveData<ValidationState> = _demoApiState
+
+    private val tempApiKey = MutableLiveData("")
 
     private val _isHomeVisit = MutableLiveData<Boolean>(false)
     val isHomeVisit: LiveData<Boolean> = _isHomeVisit
@@ -67,7 +80,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
         )
         if (model == null) {
             viewModelScope.launch {
-                model = getModel(key = context.datastore.getApiKey())
+                model = getModel(key = tempApiKey.value.toString())
             }
         }
         makeGeneralQuery(SINGLE_CHAT, _singleResponse, prompt)
@@ -85,7 +98,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
 
         if (model == null) {
             viewModelScope.launch {
-                model = getModel(key = context.datastore.getApiKey())
+                model = getModel(key = tempApiKey.value.toString())
             }
         }
         if (chat == null) {
@@ -106,7 +119,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
         )
         if (visionModel == null) {
             viewModelScope.launch {
-                visionModel = getModel(key = context.datastore.getApiKey(), vision = true)
+                visionModel = getModel(key = tempApiKey.value.toString(), vision = true)
             }
         }
         val inputContent = content {
@@ -149,6 +162,10 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
     fun makeHomeVisit() {
         _isHomeVisit.value = true
         resetValidationState()
+    }
+
+    fun updateApiKey(key: String) {
+        tempApiKey.value = key
     }
 
     private fun makeGeneralQuery(
@@ -195,6 +212,34 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
                         isGenerating = false
                     )
                 )
+            }
+        }
+    }
+
+    // Initiates a demo API request with specified parameters.
+    // See: https://github.com/spongycode/spacee-gemini-server for implementation details.
+    fun makeDemoApiRequest(context: Context) {
+        viewModelScope.launch {
+            try {
+                _demoApiState.value = ValidationState.Checking
+                val client = HttpClient(CIO) {
+                    install(ContentNegotiation) {
+                        json()
+                    }
+                }
+                val response: HttpResponse =
+                    client.get {
+                        url(context.getString(R.string.demo_api_get_endpoint))
+                        parameter("secret", context.getString(R.string.secret_get_key))
+                    }
+                val resBody: DemoApi = response.body()
+                if (!resBody.apikey.isNullOrBlank()) {
+                    tempApiKey.value = resBody.apikey
+                    _demoApiState.value = ValidationState.Valid
+                }
+                client.close()
+            } catch (_: Exception) {
+                _demoApiState.value = ValidationState.Invalid
             }
         }
     }

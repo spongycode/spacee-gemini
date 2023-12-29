@@ -13,4 +13,7 @@
     <string name="error_occurred">Some error occurred.</string>
     <string name="generating">Generating…</string>
     <string name="text_copied">Text copied to clipboard.</string>
+    <string name="demo_api_get_endpoint">https://spacee-gemini.vercel.app/api/ai/key</string>
+    <string name="secret_get_key">ADD_SECRET_GET_KEY</string>
+    <string name="testing_purpose">🐒 use for testing purposes only</string>
 </resources>
