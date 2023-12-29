@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
-fun HomeTopBar(scope: CoroutineScope, drawerState: DrawerState) {
+fun MainTopBar(scope: CoroutineScope, drawerState: DrawerState) {
     CenterAlignedTopAppBar(
         title = {
             Row(
