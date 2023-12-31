@@ -1,14 +1,17 @@
 package com.spongycode.spaceegemini.navigation
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +19,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.spongycode.spaceegemini.App
 import com.spongycode.spaceegemini.R
@@ -28,24 +30,29 @@ fun DrawerNav(
     onCloseDrawer: () -> Unit,
     navController: NavHostController
 ) {
-    ModalDrawerSheet {
+    ModalDrawerSheet(
+        modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
+        drawerContainerColor = MaterialTheme.colorScheme.primaryContainer
+    ) {
         Spacer(modifier = Modifier.height(40.dp))
         items.forEachIndexed { index, item ->
             NavigationDrawerItem(
                 label = {
                     Text(
                         text = item.title,
+                        color = MaterialTheme.colorScheme.primary,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.W600,
-                        modifier = Modifier.padding(5.dp)
+                        modifier = Modifier
+                            .padding(5.dp)
                     )
                 },
                 selected = selectedItemIndex == index,
                 onClick = {
                     onItemSelect(index)
                     onCloseDrawer()
-                    navController.navigate(item.title){
-                        popUpTo(item.title){
+                    navController.navigate(item.title) {
+                        popUpTo(item.title) {
                             inclusive = true
                         }
                         launchSingleTop = true
@@ -57,7 +64,7 @@ fun DrawerNav(
                             .size(36.dp)
                             .padding(5.dp)
                     ) {
-                        Image(
+                        Icon(
                             painterResource(
                                 id = if (index == selectedItemIndex) {
                                     item.selectedIcon
@@ -65,10 +72,15 @@ fun DrawerNav(
                                     item.unselectedIcon
                                 }
                             ),
+                            tint = MaterialTheme.colorScheme.primary,
                             contentDescription = item.title
                         )
                     }
                 },
+                colors = NavigationDrawerItemDefaults.colors(
+                    unselectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                    selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)

@@ -88,7 +88,7 @@ fun SetApiScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -100,10 +100,15 @@ fun SetApiScreen(
                     text = newText
                     viewModel.resetValidationState()
                 },
-                placeholder = { Text(text = "Enter your api key") },
+                placeholder = {
+                    Text(
+                        color = MaterialTheme.colorScheme.inversePrimary,
+                        text = "Enter your api key"
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White)
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(10.dp),
                 shape = RoundedCornerShape(28),
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
@@ -111,13 +116,14 @@ fun SetApiScreen(
                     onDone = { keyboardController?.hide() }
                 ),
                 colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Black,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                     unfocusedIndicatorColor = Color.LightGray,
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    cursorColor = Color.Black
+                    focusedContainerColor = MaterialTheme.colorScheme.background,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                    cursorColor = MaterialTheme.colorScheme.primary
                 ),
                 textStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.W500,
                     fontSize = 18.sp
                 )
@@ -192,6 +198,7 @@ fun DemoApiButton(viewModel: MainViewModel, navController: NavHostController) {
     ) {
 
         Text(
+            color = MaterialTheme.colorScheme.primary,
             text = "or,",
             style = MaterialTheme.typography.titleMedium,
         )
@@ -217,15 +224,16 @@ fun DemoApiButton(viewModel: MainViewModel, navController: NavHostController) {
             colors = ButtonDefaults.buttonColors(
                 containerColor = when (demoApiState) {
                     MainViewModel.ValidationState.Checking -> Color.DarkGray
-                    MainViewModel.ValidationState.Idle -> Color.Black
+                    MainViewModel.ValidationState.Idle -> Color(0xFFE29627)
                     MainViewModel.ValidationState.Invalid -> DecentRed
                     MainViewModel.ValidationState.Valid -> DecentGreen
                     null -> DecentBlue
                 },
-                contentColor = Color.White
+                contentColor = Color.Black
             )
         ) {
             Text(
+                color = Color.White,
                 modifier = Modifier.padding(8.dp),
                 text = when (demoApiState) {
                     MainViewModel.ValidationState.Checking -> "Fetching..."
@@ -250,26 +258,38 @@ fun ApiSetupHelper() {
     val uriHandler = LocalUriHandler.current
 
     val apiSetup = buildAnnotatedString {
-        append("Learn how to set up your own API key. ")
+        withStyle(
+            style = SpanStyle(
+                color = MaterialTheme.colorScheme.primary
+            )
+        ) {
+            append("Learn how to set up your own API key. ")
+        }
         pushStringAnnotation(
             tag = "click",
             annotation = stringResource(id = R.string.api_setup_link)
         )
         withStyle(
             style = SpanStyle(
-                color = Color.Blue,
+                color = Color(0xFF267BC4),
                 textDecoration = TextDecoration.Underline
             )
         ) {
             append("Click here")
         }
         pop()
-        append(" for details.")
+        withStyle(
+            style = SpanStyle(
+                color = MaterialTheme.colorScheme.primary
+            )
+        ) {
+            append(" for details.")
+        }
     }
 
     Row(
         modifier = Modifier
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 10.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -278,6 +298,7 @@ fun ApiSetupHelper() {
         Icon(
             modifier = Modifier.size(50.dp),
             painter = painterResource(id = R.drawable.about_icon),
+            tint = MaterialTheme.colorScheme.primary,
             contentDescription = "help"
         )
         ClickableText(

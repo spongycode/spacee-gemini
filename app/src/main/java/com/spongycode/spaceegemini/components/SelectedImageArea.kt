@@ -16,6 +16,7 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -31,7 +32,11 @@ import com.spongycode.spaceegemini.ui.theme.DecentRed
 
 @Composable
 fun SelectedImageArea(bitmaps: SnapshotStateList<Bitmap>) {
-    LazyRow(modifier = Modifier.fillMaxWidth()) {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         items(bitmaps.size) { index ->
             val bitmap = bitmaps[index]
             val iconSize = 24.dp

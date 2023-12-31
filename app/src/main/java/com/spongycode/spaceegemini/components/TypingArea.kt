@@ -4,7 +4,6 @@ import android.Manifest
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +21,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -78,7 +79,7 @@ fun TypingArea(
                 end = 10.dp,
                 start = if (apiType == ApiType.SINGLE_CHAT) 10.dp else 0.dp
             )
-            .background(Color.White),
+            .background(colorScheme.background),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
@@ -90,35 +91,46 @@ fun TypingArea(
             expanded = expanded,
             onDismissRequest = {
                 expanded = false
-            }
+            },
+            modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
         ) {
             DropdownMenuItem(
+                modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer),
                 onClick = {
                     expanded = false
                     permissionLauncher?.launch(Manifest.permission.CAMERA)
                 }
             ) {
-                Image(
+                Icon(
                     modifier = Modifier.size(25.dp),
                     painter = painterResource(id = R.drawable.add_camera_icon),
+                    tint = colorScheme.primary,
                     contentDescription = "camera"
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = "Camera", fontSize = 15.sp, fontWeight = FontWeight.W600)
+                Text(
+                    color = colorScheme.primary,
+                    text = "Camera", fontSize = 15.sp, fontWeight = FontWeight.W600
+                )
             }
             DropdownMenuItem(
+                modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer),
                 onClick = {
                     expanded = false
                     galleryLauncher?.launch("image/*")
                 }
             ) {
-                Image(
+                Icon(
                     modifier = Modifier.size(25.dp),
                     painter = painterResource(id = R.drawable.add_gallery_icon),
+                    tint = colorScheme.primary,
                     contentDescription = "gallery"
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = "Gallery", fontSize = 15.sp, fontWeight = FontWeight.W600)
+                Text(
+                    color = colorScheme.primary,
+                    text = "Gallery", fontSize = 15.sp, fontWeight = FontWeight.W600
+                )
             }
         }
 
@@ -129,7 +141,7 @@ fun TypingArea(
                 Icon(
                     modifier = Modifier.size(30.dp),
                     painter = painterResource(id = R.drawable.refresh),
-                    tint = Color.Black,
+                    tint = colorScheme.primary,
                     contentDescription = "refresh"
                 )
             }
@@ -138,9 +150,10 @@ fun TypingArea(
                 expanded = true
             }
             ) {
-                Image(
+                Icon(
                     modifier = Modifier.size(30.dp),
                     painter = painterResource(id = R.drawable.add_icon),
+                    tint = colorScheme.primary,
                     contentDescription = "add"
                 )
             }
@@ -151,21 +164,26 @@ fun TypingArea(
         OutlinedTextField(
             value = text,
             onValueChange = { newText -> text = newText },
-            placeholder = { Text(text = "Ask a question") },
+            placeholder = {
+                Text(
+                    color = MaterialTheme.colorScheme.inversePrimary,
+                    text = "Ask a question"
+                )
+            },
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .background(Color.White),
+                .background(colorScheme.background),
             shape = RoundedCornerShape(28),
             keyboardActions = KeyboardActions(
                 onDone = { keyboardController?.hide() }
             ),
             colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Black,
+                focusedIndicatorColor = colorScheme.primary,
                 unfocusedIndicatorColor = Color.LightGray,
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                cursorColor = Color.Black
+                focusedContainerColor = colorScheme.background,
+                unfocusedContainerColor = colorScheme.background,
+                cursorColor = colorScheme.primary
             ),
             maxLines = 5,
             trailingIcon = {
@@ -176,7 +194,6 @@ fun TypingArea(
                     if (isGenerating != true) {
                         Icon(
                             painter = painterResource(id = R.drawable.send_icon),
-                            tint = Color.Black,
                             contentDescription = "send",
                             modifier = Modifier
                                 .size(30.dp)
@@ -206,7 +223,8 @@ fun TypingArea(
                                         }
                                         text = TextFieldValue("")
                                     }
-                                }
+                                },
+                            tint = colorScheme.primary
                         )
                     } else {
                         val strokeWidth = 2.dp

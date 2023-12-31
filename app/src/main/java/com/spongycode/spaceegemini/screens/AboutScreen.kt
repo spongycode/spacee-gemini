@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -42,7 +41,7 @@ fun AboutScreen(navController: NavHostController) {
         Column(
             Modifier
                 .fillMaxHeight()
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.Center
         ) {
             Credits()
@@ -55,27 +54,53 @@ fun Credits() {
     val uriHandler = LocalUriHandler.current
 
     val credits = buildAnnotatedString {
-        append("Built by ")
+        withStyle(
+            style = SpanStyle(color = MaterialTheme.colorScheme.primary)
+        ) {
+            append("Built by ")
+        }
         pushStringAnnotation(tag = "person1", annotation = stringResource(id = R.string.person1))
-        withStyle(style = SpanStyle(color = Blue, textDecoration = TextDecoration.Underline)) {
+        withStyle(
+            style = SpanStyle(
+                color = Color(0xFF267BC4),
+                textDecoration = TextDecoration.Underline
+            )
+        ) {
             append("Himanshu")
         }
         pop()
-        append(" & ")
+        withStyle(
+            style = SpanStyle(color = MaterialTheme.colorScheme.primary)
+        ) {
+            append(" & ")
+        }
         pushStringAnnotation(tag = "person2", annotation = stringResource(id = R.string.person2))
-        withStyle(style = SpanStyle(color = Blue, textDecoration = TextDecoration.Underline)) {
+        withStyle(
+            style = SpanStyle(
+                color = Color(0xFF267BC4),
+                textDecoration = TextDecoration.Underline
+            )
+        ) {
             append("Vasanth")
         }
         pop()
     }
 
     val opensource = buildAnnotatedString {
-        append("Explore the code on ")
+        withStyle(
+            style = SpanStyle(color = MaterialTheme.colorScheme.primary)
+        ) {
+            append("Explore the code on ")
+        }
         pushStringAnnotation(
             tag = "opensource",
             annotation = stringResource(id = R.string.opensource)
         )
-        withStyle(style = SpanStyle(color = Blue, textDecoration = TextDecoration.Underline)) {
+        withStyle(
+            style = SpanStyle(
+                color = Color(0xFF267BC4), textDecoration = TextDecoration.Underline
+            )
+        ) {
             append("GitHub")
         }
         pop()
@@ -83,60 +108,60 @@ fun Credits() {
 
 
 
-    Column {
-        Card(
-            elevation = CardDefaults.cardElevation(5.dp),
-            shape = RoundedCornerShape(15),
-            colors = CardDefaults.cardColors(Color.White),
+    Card(
+        elevation = CardDefaults.cardElevation(5.dp),
+        shape = RoundedCornerShape(0),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 30.dp, start = 10.dp, end = 10.dp, bottom = 30.dp)
+            .background(MaterialTheme.colorScheme.primaryContainer)
+
+    ) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 30.dp, start = 10.dp, end = 10.dp, bottom = 30.dp)
-
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .padding(10.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                ClickableText(
-                    modifier = Modifier.padding(10.dp),
-                    text = credits,
-                    style = MaterialTheme.typography.titleMedium,
-                    onClick = { offset ->
-                        credits.getStringAnnotations(
-                            tag = "person1",
-                            start = offset,
-                            end = offset
-                        ).firstOrNull()?.let {
-                            uriHandler.openUri(it.item)
-                        }
+            ClickableText(
+                modifier = Modifier.padding(10.dp),
+                text = credits,
+                style = MaterialTheme.typography.titleMedium,
+                onClick = { offset ->
+                    credits.getStringAnnotations(
+                        tag = "person1",
+                        start = offset,
+                        end = offset
+                    ).firstOrNull()?.let {
+                        uriHandler.openUri(it.item)
+                    }
 
-                        credits.getStringAnnotations(
-                            tag = "person2",
-                            start = offset,
-                            end = offset
-                        ).firstOrNull()?.let {
-                            uriHandler.openUri(it.item)
-                        }
+                    credits.getStringAnnotations(
+                        tag = "person2",
+                        start = offset,
+                        end = offset
+                    ).firstOrNull()?.let {
+                        uriHandler.openUri(it.item)
                     }
-                )
-                ClickableText(
-                    modifier = Modifier.padding(10.dp),
-                    text = opensource,
-                    style = MaterialTheme.typography.titleMedium,
-                    onClick = { offset ->
-                        opensource.getStringAnnotations(
-                            tag = "opensource",
-                            start = offset,
-                            end = offset
-                        ).firstOrNull()?.let {
-                            uriHandler.openUri(it.item)
-                        }
+                }
+            )
+            ClickableText(
+                modifier = Modifier.padding(10.dp),
+                text = opensource,
+                style = MaterialTheme.typography.titleMedium,
+                onClick = { offset ->
+                    opensource.getStringAnnotations(
+                        tag = "opensource",
+                        start = offset,
+                        end = offset
+                    ).firstOrNull()?.let {
+                        uriHandler.openUri(it.item)
                     }
-                )
-            }
+                }
+            )
         }
     }
 }
