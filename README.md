@@ -7,6 +7,7 @@ Spacee-Gemini is an Android app that lets you chat with AI powered by [Gemini](h
 - <b>Single Chat:</b> For quick, standalone conversations where context is not retained.
 - <b>Demo API:</b> Use it for instant access, intended for testing purposes only. See [here](https://github.com/spongycode/spacee-gemini-server) for implementation details.
 - <b>Persistent History:</b> Easily pick up where you left off with chat history stored locally using [Room](https://developer.android.com/jetpack/androidx/releases/room), ensuring your conversations persist across app sessions.
+- <b>Dark Mode Support:</b> Perfect for night browsing. 
 - <b>Powered by [Gemini](https://deepmind.google/technologies/gemini/#introduction) AI:</b> Leverages the cutting-edge capabilities of Google AI's Gemini model to generate text, translate languages, write different kinds of creative content, and answer your questions in an informative way.
 
 ## Screenshots 📷
