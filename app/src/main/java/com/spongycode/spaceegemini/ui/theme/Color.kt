@@ -15,3 +15,23 @@ val DecentRed = Color(0xFFEA4141)
 val DecentGreen = Color(0xFF21C091)
 val DecentBlue = Color(0xFF6BA3D3)
 val BlueLight = Color(0xFF99A4EE)
+
+//sealed class ThemeColors(
+//    val background:Color,
+//    val surface:Color,
+//    val primary:Color,
+//    val text:Color
+//){
+//    object Dark : ThemeColors(
+//        background = Color(0XFFFFFFFF),
+//        surface = Color(0XFFFFFFFF),
+//        primary = Color(0XFF000000),
+//        text = Color(0XFF000000)
+//    )
+//    object Light : ThemeColors(
+//        background = Color(0XFF000000),
+//        surface = Color(0XFF000000),
+//        primary = Color(0XFFFFFFFF),
+//        text = Color(0XFFFFFFFF)
+//    )
+//}

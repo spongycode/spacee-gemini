@@ -21,12 +21,18 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = Pink80,
     background = Color.Black,
 
+//    primary = ThemeColors.Dark.primary,
+//    onPrimary = ThemeColors.Dark.text,
+//    surface = ThemeColors.Dark.surface,
+//    background = ThemeColors.Dark.background
     )
 
 private val LightColorScheme = lightColorScheme(
     primary = Color.Black,
-    primaryContainer = Color(0xFFEBE7E7),
-    secondaryContainer = Color(0xFFE2D8D8),
+//    primaryContainer = Color(0xFFEBE7E7),
+    primaryContainer = Color.White,
+//    secondaryContainer = Color(0xFFE2D8D8),
+    secondaryContainer = Color.LightGray,
     inversePrimary = Color(0xFF777373),
     secondary = PurpleGrey40,
     tertiary = Pink40,
@@ -40,6 +46,11 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F),
     */
+
+//    primary = ThemeColors.Light.primary,
+//    onPrimary = ThemeColors.Light.text,
+//    surface = ThemeColors.Light.surface,
+//    background = ThemeColors.Light.background
 )
 
 @Composable

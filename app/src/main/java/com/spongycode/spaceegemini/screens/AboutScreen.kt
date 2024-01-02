@@ -109,7 +109,7 @@ fun Credits() {
 
 
     Card(
-        elevation = CardDefaults.cardElevation(5.dp),
+        elevation = CardDefaults.cardElevation(10.dp),
         shape = RoundedCornerShape(0),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
         modifier = Modifier
