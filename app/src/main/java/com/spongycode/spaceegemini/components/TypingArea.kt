@@ -200,7 +200,7 @@ fun TypingArea(
                                 .clickable {
                                     if (text.text
                                             .trim()
-                                            .isNotEmpty() && (apiType != ApiType.IMAGE_CHAT || bitmaps!!.isNotEmpty())
+                                            .isNotEmpty()
                                     ) {
                                         keyboardController?.hide()
                                         focusManager.clearFocus()

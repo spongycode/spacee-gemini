@@ -52,11 +52,10 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
 
     private val tempApiKey = MutableLiveData("")
 
-    private val _isHomeVisit = MutableLiveData<Boolean>(false)
+    private val _isHomeVisit = MutableLiveData(false)
     val isHomeVisit: LiveData<Boolean> = _isHomeVisit
 
     private var model: GenerativeModel? = null
-    private var visionModel: GenerativeModel? = null
     private var chat: Chat? = null
 
     init {
@@ -117,16 +116,20 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
                 isGenerating = true
             )
         )
-        if (visionModel == null) {
+        if (model == null) {
             viewModelScope.launch {
-                visionModel = getModel(key = tempApiKey.value.toString(), vision = true)
+                model = getModel(key = tempApiKey.value.toString())
             }
+        }
+        if (chat == null) {
+            chat = getChat()
         }
         val inputContent = content {
             bitmaps.take(4).forEach {
                 image(it)
             }
             text(prompt)
+            role = "user"
         }
         makeGeneralQuery(IMAGE_CHAT, _imageResponse, inputContent)
     }
@@ -143,7 +146,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
         viewModelScope.launch {
             _validationState.value = ValidationState.Checking
             try {
-                model = getModel(key = apiKey, vision = false)
+                model = getModel(key = apiKey)
                 val res = model?.generateContent("Hi")
                 if (res?.text?.isNotEmpty() == true) {
                     _validationState.value = ValidationState.Valid
@@ -179,7 +182,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
                 val stream = when (apiType) {
                     SINGLE_CHAT -> model?.generateContentStream(feed as String)
                     MULTI_CHAT -> chat?.sendMessageStream(feed as String)
-                    IMAGE_CHAT -> visionModel?.generateContentStream(feed as Content)
+                    IMAGE_CHAT -> chat?.sendMessageStream(feed as Content)
                 }
                 stream?.collect { chunk ->
                     output += chunk.text.toString()
@@ -246,9 +249,9 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
 
     private fun getChat() = model?.startChat(generatePreviousChats())
 
-    private fun getModel(key: String, vision: Boolean = false) =
+    private fun getModel(key: String) =
         GenerativeModel(
-            modelName = if (vision) "gemini-pro-vision" else "gemini-pro",
+            modelName = "gemini-1.5-pro",
             apiKey = key,
             safetySettings = listOf(
                 SafetySetting(HarmCategory.HARASSMENT, BlockThreshold.NONE),
